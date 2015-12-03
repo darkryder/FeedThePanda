@@ -43,7 +43,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         FeedAdapter taskAdapter = new FeedAdapter(getActivity(), R.layout.list_item_post, objects);
         JazzyListView listView = (JazzyListView) rootView.findViewById(R.id.listview_posts);
         listView.setTransitionEffect(new CardsEffect());
-        listView.setMaxAnimationVelocity(20);
+        listView.setMaxAnimationVelocity(100);
         listView.setAdapter(taskAdapter);
 
         // Setup
