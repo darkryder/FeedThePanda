@@ -15,26 +15,26 @@
         card_view:cardElevation="0.01dp"
         android:layout_marginBottom="0dp">
         <RelativeLayout
-            android:id="@+id/listItemChannelTopView"
+            android:id="@+id/top_layout"
             android:layout_width="165dp"
             android:layout_height="160dp">
 
             <ImageView
-                android:id="@+id/listItemChannelImage"
+                android:id="@+id/img_thumbnail"
                 android:layout_width="wrap_content"
                 android:layout_height="150dp"
                 android:scaleType="fitXY"
-                android:layout_above="@+id/listItemChannelName" />
+                android:layout_above="@+id/tv_species" />
             <TextView
-                android:id="@+id/listItemChannelName"
+                android:id="@+id/tv_species"
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="2dp"
                 android:layout_gravity="bottom"
                 android:gravity="center_vertical"
-                android:background="@color/colorPrimaryLight"
-                android:textColor="@color/textColorPrimary"
+                android:background="#ff444444"
+                android:textColor="#fff"
                 android:textSize="20dp"
                 android:text="Test"
                 android:layout_alignParentBottom="true"

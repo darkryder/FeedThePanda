@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.example.soumya.feedthepanda.FeedFragment">
 
-
-    <ListView android:id="@+id/listview_posts"
+    <com.twotoasters.jazzylistview.JazzyListView
+        android:id="@+id/listview_posts"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </FrameLayout>

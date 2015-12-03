@@ -1,11 +1,13 @@
 package com.example.soumya.feedthepanda;
 
+import com.leocardz.aelv.library.AelvListItem;
+
 import java.util.Date;
 
 /**
  * Created by Soumya on 29-11-2015.
  */
-public class Post {
+public class Post extends AelvListItem{
 
     private String heading;
     private String description;
@@ -14,6 +16,7 @@ public class Post {
     private boolean isRead;
     private Channel channel;
     private String link;
+    private int drawable;
 
     public Post(String heading, String description, Date createdOn, Channel channel) {
         this(heading, description, null, createdOn, false, channel);
@@ -28,12 +31,14 @@ public class Post {
     }
 
     public Post(String heading, String description, String madeBy, Date createdOn, boolean isRead, Channel channel) {
+        super();
         this.heading = heading;
         this.description = description;
         this.madeBy = madeBy;
         this.createdOn = createdOn;
         this.isRead = isRead;
         this.channel = channel;
+        this.drawable = R.drawable.down_arrow;
     }
 
     public String getHeading() {
@@ -83,4 +88,13 @@ public class Post {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+
+    public int getDrawable() {
+        return drawable;
+    }
+
+    public void setDrawable(int drawable) {
+        this.drawable = drawable;
+    }
+
 }
