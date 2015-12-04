@@ -76,7 +76,6 @@ public class FeedAdapter extends ArrayAdapter {
         holder.getViewWrap().setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, post.getCurrentHeight()));
 
         holder.headingTextView.setText(post.getHeading());
-        holder.headingTextView.setCompoundDrawablesWithIntrinsicBounds(post.getDrawable(), 0, 0, 0);
 
         holder.descriptionTextView.setText(post.getDescription());
         holder.dateTextView.setText(post.getCreatedOn().toString());

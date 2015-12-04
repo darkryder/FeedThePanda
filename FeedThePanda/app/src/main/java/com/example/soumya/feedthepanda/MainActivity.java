@@ -1,17 +1,31 @@
 package com.example.soumya.feedthepanda;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -26,10 +40,32 @@ public class MainActivity extends AppCompatActivity
      */
     private CharSequence mTitle;
 
+    // GCM Listener
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent intent = new Intent(getApplicationContext(),
+                RegistrationIntentService.class);
+        ComponentName name = startService(intent);
+        Log.v("Extra", "Sent intent" + name.toString());
+        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.i("Extra", "GCM Started. Hopefully");
+                SharedPreferences sharedPreferences =
+                        PreferenceManager.getDefaultSharedPreferences(context);
+                boolean sentToken = sharedPreferences
+                        .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                if (sentToken) {
+                } else {
+                }
+            }
+        };
+
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -42,28 +78,48 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mRegistrationBroadcastReceiver,
+                new IntentFilter(QuickstartPreferences.REGISTRATION_COMPLETE));
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mRegistrationBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         Fragment objFragment = null;
+        FragmentManager fragmentManager = getSupportFragmentManager();
         switch(position) {
             case 0:
                 objFragment = new FeedFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, objFragment)
+                        .commit();
                 break;
             case 1:
                 objFragment = new SubscribedChannelsFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, objFragment)
+                        .commit();
                 break;
             case 2:
                 objFragment = new AllChannelsFragment();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, objFragment)
+                        .commit();
                 break;
             case 3:
                 objFragment = new AboutMeFragment();
+                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                startActivity(i);
                 break;
         }
-
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, objFragment)
-                .commit();
 
         //PlaceholderFragment.newInstance(position+1)
     }

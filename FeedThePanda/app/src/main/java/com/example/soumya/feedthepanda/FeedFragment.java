@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,8 +32,11 @@ import java.util.Date;
 
 public class FeedFragment extends android.support.v4.app.Fragment {
 
-    private ArrayList<Post> objects;
+    private static ArrayList<Post> objects;
     View rootView;
+
+    private static boolean fetched = false;
+    private static ArrayList<Post> fetched_posts = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,10 +58,10 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         final Aelv aelv = new Aelv(true, 200, objects, listView, taskAdapter, new AelvCustomAction() {
             @Override
             public void onEndAnimation(int position) {
-                objects.get(position).setDrawable(objects.get(position).isOpen() ? R.drawable.up_arrow : R.drawable.down_arrow);
-                /*objects.get(position).setDescription(objects.get(position).isOpen()
+//                objects.get(position).setDrawable(objects.get(position).isOpen() ? R.drawable.up_arrow : R.drawable.down_arrow);
+                objects.get(position).setDescription(objects.get(position).isOpen()
                         ? objects.get(position).getDescription()
-                        : objects.get(position).getDescription().substring(1,2000));*/
+                        : (objects.get(position).getDescription().substring(1,500)) + "...");
             }
         });
 
@@ -73,113 +78,161 @@ public class FeedFragment extends android.support.v4.app.Fragment {
     }
 
     private void mockItems() {
+
         final int COLLAPSED_HEIGHT_1 = 150, COLLAPSED_HEIGHT_2 = 200, COLLAPSED_HEIGHT_3 = 250;
         final int EXPANDED_HEIGHT_1 = 250, EXPANDED_HEIGHT_2 = 300, EXPANDED_HEIGHT_3 = 350, EXPANDED_HEIGHT_4 = 400;
 
-        Post listItem = new Post("Bleh", "How Are you?", new Date(), new Channel("Sheetu"));
-        // setUp IS REQUIRED
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+        FetchPosts task = new FetchPosts(getActivity());
+        task.execute();
 
-        listItem = new Post("Bleh", "How Are you?", new Date(), new Channel("FindMyStuff"));
-        // setUp IS REQUIRED
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+        if(fetched)
+        {
+            objects = fetched_posts;
+            for(int i = 0; i < objects.size(); i++)
+            {
+                Post current = objects.get(i);
+                if (current.getDescription().length() > COLLAPSED_HEIGHT_2){
+                    current.setUp(COLLAPSED_HEIGHT_2, current.getDescription().length(), false);
+                } else {
+                    current.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+                }
+            }
         }
-        objects.add(listItem);
 
-        listItem = new Post("Bleh", "How Are you?", new Date(), new Channel(""));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+        if (!fetched)
+        {
+            Post listItem = new Post("Bleh", "How Are you?", new Date(), new Channel("Sheetu"));
+            // setUp IS REQUIRED
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Aditi", "Lorem Ipsum", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = new Post("Bleh", "How Are you?", new Date(), new Channel("FindMyStuff"));
+            // setUp IS REQUIRED
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc bibendum in odio in vulputate. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam elit erat, posuere at lacus et, ornare ultrices augue. In auctor ut tellus at scelerisque. Vivamus tempor magna et nisl accumsan scelerisque vel elementum ipsum. Praesent non dignissim sem, id egestas dui. Nam eu fringilla dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam tincidunt sapien eget magna faucibus dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean rutrum, justo eu fringilla convallis, diam libero rutrum erat, lacinia euismod nibh metus at nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam rutrum turpis non viverra dictum.", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = new Post("Bleh", "How Are you?", new Date(), new Channel(""));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = (new Post("Aditi", "Lorem Ipsum", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = (new Post("Bleh", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc bibendum in odio in vulputate. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam elit erat, posuere at lacus et, ornare ultrices augue. In auctor ut tellus at scelerisque. Vivamus tempor magna et nisl accumsan scelerisque vel elementum ipsum. Praesent non dignissim sem, id egestas dui. Nam eu fringilla dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam tincidunt sapien eget magna faucibus dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean rutrum, justo eu fringilla convallis, diam libero rutrum erat, lacinia euismod nibh metus at nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam rutrum turpis non viverra dictum.", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
-        }
-        objects.add(listItem);
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
 
-        listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
-        if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
-            listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
-        } else {
-            listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
+
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
+
+            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
+                listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
+            } else {
+                listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
+            }
+            objects.add(listItem);
+
         }
-        objects.add(listItem);
+
     }
+
+
+    private class FetchPosts extends AsyncTask<Void, Void, ArrayList<Post>>
+    {
+        Context c;
+        public FetchPosts(Context c) {this.c = c;}
+
+        @Override
+        protected ArrayList<Post> doInBackground(Void... params) {
+            return DataFetcher.getPosts(PreferenceManager.getDefaultSharedPreferences(c).getString("api_key", "nope"));
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Post> posts) {
+            super.onPostExecute(posts);
+            //objects = posts;
+            //fetched = true;
+            //fetched_posts = posts;
+        }
+    }
+
+//    private class AsyncTaskGetFeeds extends AsyncTask<String, String, String>() {
+//        private String resp;
+//
+//    }
 }
