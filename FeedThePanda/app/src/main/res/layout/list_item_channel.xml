@@ -1,46 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:descendantFocusability="blocksDescendants"
+    android:id="@+id/channel_wrap">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="165dp"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="3dp"
-        android:layout_marginTop="9dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        card_view:cardElevation="0.01dp"
-        android:layout_marginBottom="0dp">
-        <RelativeLayout
-            android:id="@+id/listItemChannelTopView"
-            android:layout_width="165dp"
-            android:layout_height="160dp">
+        android:layout_weight="1"
+        android:minHeight="150px"
+        android:maxHeight="200px"
+        android:padding="10px"
+        android:id="@+id/imageChannel"/>
 
-            <ImageView
-                android:id="@+id/listItemChannelImage"
-                android:layout_width="wrap_content"
-                android:layout_height="150dp"
-                android:scaleType="fitXY"
-                android:layout_above="@+id/listItemChannelName" />
-            <TextView
-                android:id="@+id/listItemChannelName"
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="2dp"
-                android:layout_gravity="bottom"
-                android:gravity="center_vertical"
-                android:background="@color/colorPrimaryLight"
-                android:textColor="@color/textColorPrimary"
-                android:textSize="20dp"
-                android:text="Test"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:paddingLeft="15px"
+        android:paddingTop="10px"
+        android:paddingRight="10px"
+        android:paddingBottom="10px"
+        android:minHeight="150px"
+        android:maxHeight="200px"
+        android:id="@+id/nameChannel"
+        android:layout_weight="4"
+        android:textIsSelectable="false"
+        android:textSize="20dp"
+        android:padding="20px"
+        android:textAlignment="center" />
 
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
 </LinearLayout>

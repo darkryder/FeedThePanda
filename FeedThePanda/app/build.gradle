@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
@@ -21,13 +23,16 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:ap-v7:22.2.1'
     compile 'de.hdodenhof:circleimageview:1.2.1'
+    compile 'com.google.android.gms:play-services-auth:8.3.0'
     compile 'com.android.support:recyclerview-v7:22.0.+'
     compile 'com.android.support:cardview-v7:22.0.+'
     compile 'com.android.support:support-v4:22.0.+'
-    compile 'dev.dworks.libs:astickyheader:0.1.0'
+    compile files('libs/gson-2.3.1.jar')
+//    compile 'dev.dworks.libs:astickyheader:0.1.0'
     compile 'com.leocardz:aelv:1.1@aar'
     compile 'com.twotoasters.jazzylistview:library:1.2.1'
     compile 'com.twotoasters.jazzylistview:library-recyclerview:1.2.1'
+    compile 'com.baoyz.swipemenulistview:library:1.3.0'
 }

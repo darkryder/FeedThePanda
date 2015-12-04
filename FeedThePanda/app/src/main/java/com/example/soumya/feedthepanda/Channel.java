@@ -12,7 +12,7 @@ public class Channel {
 
     private String name;
     private String description;
-    private Image channelImage;
+    private int channelImage;
     private ChannelSubscriptionType subscriptionType;
     private boolean approved;
     private String rssLink;
@@ -66,11 +66,11 @@ public class Channel {
         this.adminList = adminList;
     }
 
-    public Image getChannelImage() {
+    public int getChannelImage() {
         return channelImage;
     }
 
-    public void setChannelImage(Image channelImage) {
+    public void setChannelImage(int channelImage) {
         this.channelImage = channelImage;
     }
 
