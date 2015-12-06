@@ -48,17 +48,18 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
     }
 
     public void mockItems() {
-        objects.add(new Channel("Sheetu"));
-        objects.add(new Channel("FindMyStuff"));
-        objects.add(new Channel("IIITD"));
-        objects.add(new Channel("Sheetu"));
-        objects.add(new Channel("FindMyStuff"));
-        objects.add(new Channel("IIITD"));
-        objects.add(new Channel("Sheetu"));
-        objects.add(new Channel("FindMyStuff"));
-        objects.add(new Channel("IIITD"));
-        objects.add(new Channel("Sheetu"));
-        objects.add(new Channel("FindMyStuff"));
-        objects.add(new Channel("IIITD"));
+        objects.add(new Channel(1, "Sheetu"));
+        objects.add(new Channel(2, "FindMyStuff"));
+        objects.add(new Channel(3, "IIITD"));
+        objects.add(new Channel(1, "Sheetu"));
+        objects.add(new Channel(2, "FindMyStuff"));
+        objects.add(new Channel(3, "IIITD"));
+        objects.add(new Channel(1, "Sheetu"));
+        objects.add(new Channel(2, "FindMyStuff"));
+        objects.add(new Channel(3, "IIITD"));
+        objects.add(new Channel(1, "Sheetu"));
+        objects.add(new Channel(2, "FindMyStuff"));
+        objects.add(new Channel(3, "IIITD"));
+
     }
 }
