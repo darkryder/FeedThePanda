@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class LoginActivity extends Activity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -284,6 +285,17 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
             }
             return false;
         }
+    }
+
+
+    private void debugNetworkTasks()
+    {
+        new getChannelsTask(this).execute();
+        new getPostsOfChannelTask(this, new Channel(1, "")).execute();
+        new getPostsTask(this).execute();
+//        new markPostsRead(this, new ArrayList<Integer>())
+        new subscribeToChannelTask(this, 2).execute();
+        new unsubscribeToChannelTask(this, 2).execute();
     }
 
 }

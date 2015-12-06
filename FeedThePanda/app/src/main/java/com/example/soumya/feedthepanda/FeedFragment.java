@@ -219,7 +219,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
 
         @Override
         protected ArrayList<Post> doInBackground(Void... params) {
-            return DataFetcher.getPosts(PreferenceManager.getDefaultSharedPreferences(c).getString("api_key", "nope"));
+            return DataFetcher.getPostsHelper(PreferenceManager.getDefaultSharedPreferences(c).getString("api_key", "nope"));
         }
 
         @Override
