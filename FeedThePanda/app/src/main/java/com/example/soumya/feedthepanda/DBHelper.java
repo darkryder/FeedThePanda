@@ -89,7 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_POST_LINK + " VARCHAR(255), " +
                         COLUMN_POST_MADE_BY + " VARCHAR(255), " +
                         COLUMN_POST_CREATED_ON + " VARCHAR(1024), " +
-                        COLUMN_POST_IS_READ + " BOOLEAN " +
+                        COLUMN_POST_IS_READ + " INT " +
                         ");"
         );
 
@@ -98,9 +98,9 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_CHANNEL_TITLE + " VARCHAR(255) NOT NULL, " +
                         COLUMN_CHANNEL_DESCRIPTION + " VARCHAR(100000), " +
                         COLUMN_CHANNEL_SUBSCRIPTION_TYPE + " INT NOT NULL, " +
-                        COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " BOOLEAN, " +
+                        COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " INT, " +
                         COLUMN_CHANNEL_RSS_LINK + " VARCHAR(1000), " +
-                        COLUMN_CHANNEL_IS_SUBSCRIBED + " BOOLEAN " +
+                        COLUMN_CHANNEL_IS_SUBSCRIBED + " INT " +
                         ");"
         );
     }
@@ -121,7 +121,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_POST_LINK, post.getLink());
         contentValues.put(COLUMN_POST_CREATED_ON, post.getCreatedOn().toString());
         contentValues.put(COLUMN_POST_TO_CHANNEL_ID, post.getChannel().get_id());
-        contentValues.put(COLUMN_POST_IS_READ, post.isRead());
+        contentValues.put(COLUMN_POST_IS_READ, post.isRead()?1:0);
         long check = db.insert(TABLE_NAME_POST, null, contentValues);
         db.close();
         return check > 0;
@@ -134,9 +134,9 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_CHANNEL_TITLE, channel.getName());
         contentValues.put(COLUMN_CHANNEL_DESCRIPTION, channel.getDescription());
         contentValues.put(COLUMN_CHANNEL_SUBSCRIPTION_TYPE, channel.getSubscriptionType().id);
-        contentValues.put(COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED, channel.isApproved());
+        contentValues.put(COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED, channel.isApproved()?1:0);
         contentValues.put(COLUMN_CHANNEL_RSS_LINK, channel.getRssLink());
-        contentValues.put(COLUMN_CHANNEL_IS_SUBSCRIBED, channel.isSubscribed());
+        contentValues.put(COLUMN_CHANNEL_IS_SUBSCRIBED, channel.isSubscribed()?1:0);
         long check = db.insert(TABLE_NAME_CHANNEL, null, contentValues);
         db.close();
         return check > 0;
@@ -165,7 +165,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String postMadeBy = c.getString(c.getColumnIndexOrThrow(COLUMN_POST_MADE_BY));
         Date postcreatedOn = Post.StringToDateParser(c.getString(c.getColumnIndexOrThrow(COLUMN_POST_CREATED_ON)));
         Channel postChannel = getChannelFromID(c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_TO_CHANNEL_ID)));
-        Boolean postIsRead = returnBooleanFromInt(c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_IS_READ)));
+        Boolean postIsRead = c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_IS_READ))==1?true:false;
         Post post = new Post(postId, postTitle, postDescription, postMadeBy, postcreatedOn, postIsRead, postChannel);
         return post;
     }
@@ -190,9 +190,9 @@ public class DBHelper extends SQLiteOpenHelper {
         String channelTitle = c.getString(c.getColumnIndexOrThrow(COLUMN_CHANNEL_TITLE));
         String channelDescription = c.getString(c.getColumnIndexOrThrow(COLUMN_CHANNEL_DESCRIPTION));
         ChannelSubscriptionType channelSubscriptionType = ChannelSubscriptionType.resolveToCategory(c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_SUBSCRIPTION_TYPE)));
-        Boolean channelIsMembershipApproved = returnBooleanFromInt(c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED)));
+        Boolean channelIsMembershipApproved = c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED))==1?true:false;
         String rssLink = c.getString(c.getColumnIndexOrThrow(COLUMN_CHANNEL_RSS_LINK));
-        Boolean channelIsSubscribed = returnBooleanFromInt(c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_IS_SUBSCRIBED)));
+        Boolean channelIsSubscribed = c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_IS_SUBSCRIBED))==1?true:false;
         Channel channel = new Channel(channelId, channelTitle, channelDescription, channelIsSubscribed, channelIsMembershipApproved, rssLink, channelSubscriptionType);
         return channel;
     }
@@ -244,13 +244,13 @@ public class DBHelper extends SQLiteOpenHelper {
     public void modifyPost(Post freshPost) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_NAME_POST + " SET " +
-                COLUMN_POST_TITLE + " = " + freshPost.getHeading() + ", " +
-                COLUMN_POST_DESCRIPTION + " = " + freshPost.getDescription() + ", " +
-                COLUMN_POST_LINK + " = " + freshPost.getLink() + ", " +
-                COLUMN_POST_MADE_BY + " = " + freshPost.getMadeBy() + ", " +
-                COLUMN_POST_CREATED_ON + " = " + freshPost.getCreatedOn().toString() + ", " +
+                COLUMN_POST_TITLE + " = \"" + freshPost.getHeading() + "\", " +
+                COLUMN_POST_DESCRIPTION + " = \"" + freshPost.getDescription() + "\", " +
+                COLUMN_POST_LINK + " = \"" + freshPost.getLink() + "\", " +
+                COLUMN_POST_MADE_BY + " = \"" + freshPost.getMadeBy() + "\", " +
+                COLUMN_POST_CREATED_ON + " = \"" + freshPost.getCreatedOn().toString() + "\", " +
                 COLUMN_POST_TO_CHANNEL_ID + " = " + freshPost.getChannel().get_id() + ", " +
-                COLUMN_POST_IS_READ + " = " + freshPost.isRead() + " " +
+                COLUMN_POST_IS_READ + " = " + Integer.toString(freshPost.isRead()?1:0) + " " +
                 " WHERE " + COLUMN_POST_ID + " = " + freshPost.get_id() +
                 ";");
 
@@ -260,12 +260,12 @@ public class DBHelper extends SQLiteOpenHelper {
     public void modifyChannel(Channel freshChannel) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_NAME_CHANNEL + " SET " +
-                COLUMN_CHANNEL_TITLE + " = " + freshChannel.getName() + ", " +
-                COLUMN_CHANNEL_DESCRIPTION + " = " + freshChannel.getDescription() + ", " +
+                COLUMN_CHANNEL_TITLE + " = \"" + freshChannel.getName() + "\", " +
+                COLUMN_CHANNEL_DESCRIPTION + " = \"" + freshChannel.getDescription() + "\", " +
                 COLUMN_CHANNEL_SUBSCRIPTION_TYPE + " = " + freshChannel.getSubscriptionType().id + ", " +
-                COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " = " + freshChannel.isApproved() + ", " +
-                COLUMN_CHANNEL_RSS_LINK + " = " + freshChannel.getRssLink() + ", " +
-                COLUMN_CHANNEL_IS_SUBSCRIBED + " = " + freshChannel.isSubscribed() +  " " +
+                COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " = " + Integer.toString(freshChannel.isApproved()?1:0) + ", " +
+                COLUMN_CHANNEL_RSS_LINK + " = \"" + freshChannel.getRssLink() + "\", " +
+                COLUMN_CHANNEL_IS_SUBSCRIBED + " = " + Integer.toString(freshChannel.isSubscribed()?1:0) +  " " +
                 " WHERE " + COLUMN_CHANNEL_ID + " = " + freshChannel.get_id() +
                 ";");
         db.close();
@@ -282,7 +282,4 @@ public class DBHelper extends SQLiteOpenHelper {
     // modifyChannel
 
     //TODO Images
-    private boolean returnBooleanFromInt(int value) {
-        return value == 1;
-    }
 }

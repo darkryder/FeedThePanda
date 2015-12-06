@@ -58,19 +58,36 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         final Aelv aelv = new Aelv(true, 200, objects, listView, taskAdapter, new AelvCustomAction() {
             @Override
             public void onEndAnimation(int position) {
+                Log.v("Extra", objects.toString());
+                Post post = objects.get(position);
 //                objects.get(position).setDrawable(objects.get(position).isOpen() ? R.drawable.up_arrow : R.drawable.down_arrow);
-                objects.get(position).setDescription(objects.get(position).isOpen()
+                if(post.isOpen()) {
+//                    objects.get(position).setDescription(objects.get(position).getDescription());
+                    post.setCurrentHeight(post.getDescription().length());
+                } else {
+                    if(post.getDescription().length()>500) {
+                        post.setCurrentHeight(post.getDescription().substring(1,500).length());
+                    } else {
+                        post.setCurrentHeight(post.getDescription().length());
+                    }
+//                    objects.get(position).setDescription(objects.get(position).getDescription().substring(1,500));
+//                    objects.get(position).setCurrentHeight(objects.get(position).getDescription().substring(1,500).length());
+                }
+                /*objects.get(position).setDescription(objects.get(position).isOpen()
                         ? objects.get(position).getDescription()
-                        : (objects.get(position).getDescription().substring(1,500)) + "...");
+                        : (objects.get(position).getDescription().substring(1,500)) + "...");*/
+                // TODO Breaks while clicking
             }
         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView parent, View view, int position, long id) {
+                Log.v("Extra", "position " + position);
+                Log.v("Extra", "position " + objects.toString());
+                Log.v("Extra", "position " + objects.get(position).toString());
                 Log.v("Extra", "Toggle View: " + position + objects.get(position).toString());
                 aelv.toggle(view, position);
-//                Toast.makeText(getActivity(), objects.get(position).getHeading(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -88,6 +105,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         if(fetched)
         {
             objects = fetched_posts;
+            Log.v("Extra", objects.toString());
             for(int i = 0; i < objects.size(); i++)
             {
                 Post current = objects.get(i);
@@ -206,9 +224,8 @@ public class FeedFragment extends android.support.v4.app.Fragment {
                 listItem.setUp(COLLAPSED_HEIGHT_2, COLLAPSED_HEIGHT_2, false);
             }
             objects.add(listItem);
-
+            Log.v("Extra", objects.toString());
         }
-
     }
 
 

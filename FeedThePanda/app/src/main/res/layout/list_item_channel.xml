@@ -1,35 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<?xml version="1.0" encoding="utf-8" ?>
+<com.daimajia.swipe.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:swipe="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants"
-    android:id="@+id/channel_wrap">
+    android:layout_height="wrap_content"
+    swipe:leftEdgeSwipeOffset="0dp"
+    swipe:rightEdgeSwipeOffset="0dp">
 
-    <ImageView
-        android:layout_width="wrap_content"
+    <!--Bottom View For Right to Left-->
+
+    <LinearLayout
+        android:id="@+id/bottom_wrapper"
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:weightSum="3">
+
+        <TextView
+            android:id="@+id/channelJoin"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#0076a5"
+            android:gravity="center"
+            android:text="Edit"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/channelShare"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#003c54"
+            android:gravity="center"
+            android:text="Share"
+            android:textColor="#fff" />
+
+        <TextView
+            android:id="@+id/channelDelete"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#0076a5"
+            android:gravity="center"
+            android:text="Delete"
+            android:textColor="#fff" />
+    </LinearLayout>
+
+
+    <!-- Another Bottom View For Left to Right -->
+
+    <LinearLayout
+        android:id="@+id/bottom_wrapper1"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+
+        <ImageButton
+            android:id="@+id/btnLocation"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:gravity="center"
+            android:src="@drawable/mr_ic_audio_vol" />
+    </LinearLayout>
+
+    <!-- Top View,  Row itemView of RecyclerView -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:minHeight="150px"
-        android:maxHeight="200px"
-        android:padding="10px"
-        android:id="@+id/imageChannel"/>
+        android:background="?android:selectableItemBackground"
+        android:elevation="5dp"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Description"
-        android:paddingLeft="15px"
-        android:paddingTop="10px"
-        android:paddingRight="10px"
-        android:paddingBottom="10px"
-        android:minHeight="150px"
-        android:maxHeight="200px"
-        android:id="@+id/nameChannel"
-        android:layout_weight="4"
-        android:textIsSelectable="false"
-        android:textSize="20dp"
-        android:padding="20px"
-        android:textAlignment="center" />
+        <TextView
+            android:id="@+id/channelName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Name"
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/channelDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvName"
+            android:layout_margin="5dp"
+            android:text="Email Id"
+            android:textColor="@android:color/black"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</com.daimajia.swipe.SwipeLayout>

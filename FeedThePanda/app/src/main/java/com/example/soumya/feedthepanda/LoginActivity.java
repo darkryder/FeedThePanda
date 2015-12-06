@@ -305,7 +305,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
 
     private void debugDBTasks()
     {
-        DBHelper.deleteDatabase(this);
+//        DBHelper.deleteDatabase(this);
         DBHelper dbHelper = new DBHelper(this);
         Channel newChannel = new Channel(24, "Channel24");
         Post newPost = new Post(42, "something", "Some description", new Date(), newChannel);
@@ -332,7 +332,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
         newChannel.setDescription("Yayyy");
         dbHelper.modifyChannel(newChannel);
         retrievedChannel = dbHelper.getChannelFromID(newChannel.get_id());
-        Log.v("DbTest", "CheckModify" + retrievedChannel);
+        Log.v("DbTest", "CheckModify" + retrievedChannel.getDescription().equals("Yayyy"));
     }
 
 }
