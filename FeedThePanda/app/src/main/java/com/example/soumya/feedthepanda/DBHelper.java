@@ -85,7 +85,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_POST_ID + " INT NOT NULL PRIMARY KEY, " +
                         COLUMN_POST_TITLE + " VARCHAR(255) NOT NULL, " +
                         COLUMN_POST_DESCRIPTION + " VARCHAR(100000), " +
-                        COLUMN_POST_TO_CHANNEL_ID + " INT NOT NULL " +
+                        COLUMN_POST_TO_CHANNEL_ID + " INT NOT NULL, " +
                         COLUMN_POST_LINK + " VARCHAR(255), " +
                         COLUMN_POST_MADE_BY + " VARCHAR(255), " +
                         COLUMN_POST_CREATED_ON + " VARCHAR(1024), " +
@@ -97,7 +97,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_CHANNEL_ID + " INT NOT NULL PRIMARY KEY, " +
                         COLUMN_CHANNEL_TITLE + " VARCHAR(255) NOT NULL, " +
                         COLUMN_CHANNEL_DESCRIPTION + " VARCHAR(100000), " +
-                        COLUMN_CHANNEL_SUBSCRIPTION_TYPE + " INT NOT NULL " +
+                        COLUMN_CHANNEL_SUBSCRIPTION_TYPE + " INT NOT NULL, " +
                         COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " BOOLEAN, " +
                         COLUMN_CHANNEL_RSS_LINK + " VARCHAR(1000), " +
                         COLUMN_CHANNEL_IS_SUBSCRIBED + " BOOLEAN " +
@@ -107,6 +107,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean insertPost(Post post) {
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // check that channel exists already in db
+        if((post.getChannel() == null) || getChannelFromID(post.getChannel().get_id()) == null)
+        {return false;}
+        db = this.getWritableDatabase();
+
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_POST_ID, post.get_id());
         contentValues.put(COLUMN_POST_TITLE, post.getHeading());
@@ -218,7 +224,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Cursor c = db.query(
                 TABLE_NAME_CHANNEL,
                 channel_projection,
-                COLUMN_POST_ID + "=?",
+                COLUMN_CHANNEL_ID + "=?",
                 new String[]{String.valueOf(id)},
                 null,
                 null,
@@ -246,8 +252,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_POST_TO_CHANNEL_ID + " = " + freshPost.getChannel().get_id() + ", " +
                 COLUMN_POST_IS_READ + " = " + freshPost.isRead() + " " +
                 " WHERE " + COLUMN_POST_ID + " = " + freshPost.get_id() +
-                ";"
-                , null);
+                ";");
 
         db.close();
     }
@@ -262,8 +267,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 COLUMN_CHANNEL_RSS_LINK + " = " + freshChannel.getRssLink() + ", " +
                 COLUMN_CHANNEL_IS_SUBSCRIBED + " = " + freshChannel.isSubscribed() +  " " +
                 " WHERE " + COLUMN_CHANNEL_ID + " = " + freshChannel.get_id() +
-                ";"
-                , null);
+                ";");
         db.close();
     }
 

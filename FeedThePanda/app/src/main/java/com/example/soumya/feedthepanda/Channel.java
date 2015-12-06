@@ -111,4 +111,12 @@ public class Channel {
     public void setRssLink(String rssLink) {
         this.rssLink = rssLink;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Channel other = (Channel) o;
+        return _id == other.get_id() && name.equals(other.name) && description.equals(other.description)
+                && channelImage == other.channelImage && subscriptionType.equals(other.subscriptionType)
+                && approved == other.approved && rssLink.equals(other.rssLink) && isSubscribed == other.isSubscribed;
+    }
 }
