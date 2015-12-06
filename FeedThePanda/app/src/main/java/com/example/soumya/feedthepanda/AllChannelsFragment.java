@@ -61,5 +61,4 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
         objects.add(new Channel("FindMyStuff"));
         objects.add(new Channel("IIITD"));
     }
-
 }

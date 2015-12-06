@@ -9,6 +9,7 @@ import java.util.Date;
  */
 public class Post extends AelvListItem{
 
+    private int _id;
     private String heading;
     private String description;
     private String madeBy;
@@ -18,20 +19,21 @@ public class Post extends AelvListItem{
     private String link;
     private int drawable;
 
-    public Post(String heading, String description, Date createdOn, Channel channel) {
-        this(heading, description, null, createdOn, false, channel);
+    public Post(int id, String heading, String description, Date createdOn, Channel channel) {
+        this(id, heading, description, null, createdOn, false, channel);
     }
 
-    public Post(String heading, String description, boolean isRead, Channel channel) {
-        this(heading, description, null, null, isRead, channel);
+    public Post(int id, String heading, String description, boolean isRead, Channel channel) {
+        this(id, heading, description, null, null, isRead, channel);
     }
 
-    public Post(String heading, String description, String madeBy, Date createdOn,Channel channel) {
-        this(heading, description, madeBy, createdOn, false, channel);
+    public Post(int id, String heading, String description, String madeBy, Date createdOn,Channel channel) {
+        this(id, heading, description, madeBy, createdOn, false, channel);
     }
 
-    public Post(String heading, String description, String madeBy, Date createdOn, boolean isRead, Channel channel) {
+    public Post(int id, String heading, String description, String madeBy, Date createdOn, boolean isRead, Channel channel) {
         super();
+        this._id = id;
         this.heading = heading;
         this.description = description;
         this.madeBy = madeBy;
@@ -97,4 +99,11 @@ public class Post extends AelvListItem{
         this.drawable = drawable;
     }
 
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
+    }
 }

@@ -147,7 +147,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
         }
     }
     @Override
-    protected void onActivityResult(int requestCode, int responseCode,Intent intent) {
+    protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
         //System.out.println("Hello");
         Log.v(TAG, "ActivityResult: " + requestCode);
         if ((requestCode == RC_SIGN_IN) && (responseCode == RESULT_OK)) {
@@ -227,8 +227,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
                 task.execute(email, personName);
 
             } else {
-            Toast.makeText(getApplicationContext(),
-                    "Person information is null", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),
+                        "Person information is null", Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -242,48 +242,48 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
 
         @Override
         protected Boolean doInBackground(String... strings) {
-        String resp = null;
-        try {
-            Log.i("Extra", "Start trying to communicate with the server");
+            String resp = null;
+            try {
+                Log.i("Extra", "Start trying to communicate with the server");
 //            Log.v("PingTest", "starting");
-            URL url = new URL(DataFetcher.API_URL + "emaillogin?email=" + strings[0] + "&name=" + strings[1].split(" ")[0]);
-            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-            urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
-            Log.i("Extra", "1" + url.toString());
+                URL url = new URL(DataFetcher.API_URL + "emaillogin?email=" + strings[0] + "&name=" + strings[1].split(" ")[0]);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                Log.i("Extra", "1" + url.toString());
 
-            InputStream inputStream = urlConnection.getInputStream();
-            StringBuffer buffer = new StringBuffer();
-            if (inputStream == null) throw new IOException("InputStream was null");
+                InputStream inputStream = urlConnection.getInputStream();
+                StringBuffer buffer = new StringBuffer();
+                if (inputStream == null) throw new IOException("InputStream was null");
 
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line + "\n");
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    buffer.append(line + "\n");
+                }
+                if (buffer.length() == 0) return null;
+
+                resp = buffer.toString();
+                Log.i("Extra", "2");
+                JSONObject jsonResponse = new JSONObject(resp);
+
+                String token = jsonResponse.getString("api_key");
+
+                Log.i("Extra", token + jsonResponse);
+                Log.i("Extra", "3");
+
+                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("api_key", token).commit();
+                return true;
+            } catch (IOException e)
+            {
+                if (resp != null) Log.d("PingTest", resp.toString());
+                Log.d("PingTest", "NetworkError");
+            } catch (JSONException e)
+            {
+                Log.d("PingTest JSON", e.toString());
             }
-            if (buffer.length() == 0) return null;
-
-            resp = buffer.toString();
-            Log.i("Extra", "2");
-            JSONObject jsonResponse = new JSONObject(resp);
-
-            String token = jsonResponse.getString("api_key");
-
-            Log.i("Extra", token + jsonResponse);
-            Log.i("Extra", "3");
-
-            PreferenceManager.getDefaultSharedPreferences(context).edit().putString("api_key", token).commit();
-            return true;
-        } catch (IOException e)
-        {
-            if (resp != null) Log.d("PingTest", resp.toString());
-            Log.d("PingTest", "NetworkError");
-        } catch (JSONException e)
-        {
-            Log.d("PingTest JSON", e.toString());
+            return false;
         }
-        return false;
-    }
     }
 
 }

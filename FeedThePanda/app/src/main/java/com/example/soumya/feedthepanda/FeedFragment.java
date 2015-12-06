@@ -101,7 +101,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
 
         if (!fetched)
         {
-            Post listItem = new Post("Bleh", "How Are you?", new Date(), new Channel("Sheetu"));
+            Post listItem = new Post(1, "Bleh", "How Are you?", new Date(), new Channel("Sheetu"));
             // setUp IS REQUIRED
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
@@ -110,7 +110,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = new Post("Bleh", "How Are you?", new Date(), new Channel("FindMyStuff"));
+            listItem = new Post(1, "Bleh", "How Are you?", new Date(), new Channel("FindMyStuff"));
             // setUp IS REQUIRED
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
@@ -119,7 +119,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = new Post("Bleh", "How Are you?", new Date(), new Channel(""));
+            listItem = new Post(1, "Bleh", "How Are you?", new Date(), new Channel(""));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -127,7 +127,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Aditi", "Lorem Ipsum", new Date(), new Channel("")));
+            listItem = (new Post(1, "Aditi", "Lorem Ipsum", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -135,7 +135,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc bibendum in odio in vulputate. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam elit erat, posuere at lacus et, ornare ultrices augue. In auctor ut tellus at scelerisque. Vivamus tempor magna et nisl accumsan scelerisque vel elementum ipsum. Praesent non dignissim sem, id egestas dui. Nam eu fringilla dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam tincidunt sapien eget magna faucibus dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean rutrum, justo eu fringilla convallis, diam libero rutrum erat, lacinia euismod nibh metus at nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam rutrum turpis non viverra dictum.", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc bibendum in odio in vulputate. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam elit erat, posuere at lacus et, ornare ultrices augue. In auctor ut tellus at scelerisque. Vivamus tempor magna et nisl accumsan scelerisque vel elementum ipsum. Praesent non dignissim sem, id egestas dui. Nam eu fringilla dui. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam tincidunt sapien eget magna faucibus dapibus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aenean rutrum, justo eu fringilla convallis, diam libero rutrum erat, lacinia euismod nibh metus at nulla. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam rutrum turpis non viverra dictum.", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -143,7 +143,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -151,7 +151,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -159,7 +159,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -167,7 +167,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -175,7 +175,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -183,7 +183,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -191,7 +191,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -199,7 +199,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
 
-            listItem = (new Post("Bleh", "How Are you?", new Date(), new Channel("")));
+            listItem = (new Post(1, "Bleh", "How Are you?", new Date(), new Channel("")));
             if(listItem.getDescription().length()>COLLAPSED_HEIGHT_2) {
                 listItem.setUp(COLLAPSED_HEIGHT_2, listItem.getDescription().length(), false);
             } else {
@@ -225,14 +225,10 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         @Override
         protected void onPostExecute(ArrayList<Post> posts) {
             super.onPostExecute(posts);
-            //objects = posts;
-            //fetched = true;
-            //fetched_posts = posts;
+//            Log.v("Extra", posts.toString() + fetched + fetched_posts.toString());
+            objects = posts;
+            fetched = true;
+            fetched_posts = posts;
         }
     }
-
-//    private class AsyncTaskGetFeeds extends AsyncTask<String, String, String>() {
-//        private String resp;
-//
-//    }
 }

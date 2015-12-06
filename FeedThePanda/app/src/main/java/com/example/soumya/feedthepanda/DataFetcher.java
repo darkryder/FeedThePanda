@@ -79,11 +79,13 @@ public class DataFetcher {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             for(int i = 0; i < jsonResponse.length(); i++)
             {
+                if( i == 4)continue;
                 JSONObject small = jsonResponse.getJSONObject(i);
                 posts.add(new Post(
+                        small.getInt("id"),
                         small.getString("title"),
                         small.getString("description"),
-                        sdf.parse(small.getString("created_on")),
+                        sdf.parse(small.getString("created_at")),
                         new Channel("")
                 ));
             }
