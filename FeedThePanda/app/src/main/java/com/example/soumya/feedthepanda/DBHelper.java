@@ -60,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
             COLUMN_CHANNEL_SUBSCRIPTION_TYPE,
             COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED,
             COLUMN_CHANNEL_RSS_LINK,
-            COLUMN_CHANNEL_IS_SUBSCRIBED,
+            COLUMN_CHANNEL_IS_SUBSCRIBED
     };
 
     public DBHelper(Context context) {
@@ -158,15 +158,10 @@ public class DBHelper extends SQLiteOpenHelper {
         String postLink = c.getString(c.getColumnIndexOrThrow(COLUMN_POST_LINK));
         String postMadeBy = c.getString(c.getColumnIndexOrThrow(COLUMN_POST_MADE_BY));
         Date postcreatedOn = Post.StringToDateParser(c.getString(c.getColumnIndexOrThrow(COLUMN_POST_CREATED_ON)));
-//        Channel postChannel = getChannelFromID(c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_TO_CHANNEL_ID)));
+        Channel postChannel = getChannelFromID(c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_TO_CHANNEL_ID)));
         Boolean postIsRead = returnBooleanFromInt(c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_IS_READ)));
-//        Post post = new Post(postId, postTitle, postDescription, postMadeBy, postcreatedOn, postIsRead, postChannel);
-        Post post = new Post(postId, postTitle, postDescription, postMadeBy, postcreatedOn, postIsRead, null);
+        Post post = new Post(postId, postTitle, postDescription, postMadeBy, postcreatedOn, postIsRead, postChannel);
         return post;
-    }
-
-    private boolean returnBooleanFromInt(int value) {
-        return value == 1;
     }
 
     public ArrayList<Channel> getAllChannels() {
@@ -196,16 +191,94 @@ public class DBHelper extends SQLiteOpenHelper {
         return channel;
     }
 
-    //TODO
-    /*getPostAccordingToID
-    getChannelFromID
+    public Post getPostFromID(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(
+                TABLE_NAME_POST,
+                post_projection,
+                COLUMN_POST_ID + "=?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null
+        );
+        if(c==null) {
+            db.close();
+            return null;
+        }
+        c.moveToFirst();
+        Post post = getPostFromCursor(c);
+        c.close();
+        db.close();
+        return post;
+    }
+
+    public Channel getChannelFromID(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.query(
+                TABLE_NAME_CHANNEL,
+                channel_projection,
+                COLUMN_POST_ID + "=?",
+                new String[]{String.valueOf(id)},
+                null,
+                null,
+                null
+        );
+        if(c==null) {
+            db.close();
+            return null;
+        }
+        c.moveToFirst();
+        Channel channel = getChannelFromCursor(c);
+        c.close();
+        db.close();
+        return channel;
+    }
+
+    public void modifyPost(Post freshPost) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_NAME_POST + " SET " +
+                COLUMN_POST_TITLE + " = " + freshPost.getHeading() + ", " +
+                COLUMN_POST_DESCRIPTION + " = " + freshPost.getDescription() + ", " +
+                COLUMN_POST_LINK + " = " + freshPost.getLink() + ", " +
+                COLUMN_POST_MADE_BY + " = " + freshPost.getMadeBy() + ", " +
+                COLUMN_POST_CREATED_ON + " = " + freshPost.getCreatedOn().toString() + ", " +
+                COLUMN_POST_TO_CHANNEL_ID + " = " + freshPost.getChannel().get_id() + ", " +
+                COLUMN_POST_IS_READ + " = " + freshPost.isRead() + " " +
+                " WHERE " + COLUMN_POST_ID + " = " + freshPost.get_id() +
+                ";"
+                , null);
+
+        db.close();
+    }
+
+    public void modifyChannel(Channel freshChannel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE " + TABLE_NAME_CHANNEL + " SET " +
+                COLUMN_CHANNEL_TITLE + " = " + freshChannel.getName() + ", " +
+                COLUMN_CHANNEL_DESCRIPTION + " = " + freshChannel.getDescription() + ", " +
+                COLUMN_CHANNEL_SUBSCRIPTION_TYPE + " = " + freshChannel.getSubscriptionType().id + ", " +
+                COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " = " + freshChannel.isApproved() + ", " +
+                COLUMN_CHANNEL_RSS_LINK + " = " + freshChannel.getRssLink() + ", " +
+                COLUMN_CHANNEL_IS_SUBSCRIBED + " = " + freshChannel.isSubscribed() +  " " +
+                " WHERE " + COLUMN_CHANNEL_ID + " = " + freshChannel.get_id() +
+                ";"
+                , null);
+        db.close();
+    }
+
+    // TODO
+    // getPostAccordingToID
+    // getChannelFromID
     // getAllChannels
     // getAllPosts
     // insertPost
     // insertChannel
-    modifyPost
-    modifyChannel
-*/
-    //TODO Images
+    // modifyPost
+    // modifyChannel
 
+    //TODO Images
+    private boolean returnBooleanFromInt(int value) {
+        return value == 1;
+    }
 }
