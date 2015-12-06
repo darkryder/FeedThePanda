@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 public class Channel {
 
+    private int _id;
     private String name;
     private String description;
     private int channelImage;
@@ -17,21 +18,42 @@ public class Channel {
     private boolean approved;
     private String rssLink;
     private boolean isSubscribed;
-    private ArrayList<User> adminList;
 
-    public Channel(String name) {
-        this(name, null, false, null);
+    public Channel(int id, String name) {
+        this(id, name, null, false, false, null, ChannelSubscriptionType.MEMBER);
     }
 
-    public Channel(String name, String description) {
-        this(name, description, false, null);
+    public Channel(int id, String name, String description) {
+        this(id, name, description, false, false, null, ChannelSubscriptionType.MEMBER);
     }
 
-    public Channel(String name, String description, boolean isSubscribed, ArrayList<User> admins) {
+    public Channel(int id, String name, String description, boolean isSubscribed) {
+        this(id, name, description, isSubscribed, false, null, ChannelSubscriptionType.MEMBER);
+    }
+
+    public Channel(int id, String name, String description, boolean isSubscribed, boolean isApproved, String rssLink, ChannelSubscriptionType subscriptionType) {
+        this._id = id;
         this.name = name;
         this.description = description;
         this.isSubscribed = isSubscribed;
-        this.adminList = admins;
+        this.approved = isApproved;
+        this.rssLink = rssLink;
+        this.subscriptionType = subscriptionType;
+    }
+
+    public void copyFrom(Channel freshChannel){
+        Channel f = freshChannel;
+        _id = f._id; name = f.name; description = f.description;
+        isSubscribed = f.isSubscribed; approved = f.approved;
+        rssLink = f.rssLink; subscriptionType = f.subscriptionType;
+    }
+
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public String getName() {
@@ -56,14 +78,6 @@ public class Channel {
 
     public void setIsSubscribed(boolean isSubscribed) {
         this.isSubscribed = isSubscribed;
-    }
-
-    public ArrayList<User> getAdminList() {
-        return adminList;
-    }
-
-    public void setAdminList(ArrayList<User> adminList) {
-        this.adminList = adminList;
     }
 
     public int getChannelImage() {

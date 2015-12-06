@@ -2,12 +2,14 @@ package com.example.soumya.feedthepanda;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.provider.BaseColumns;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -18,7 +20,8 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final int DATABSE_VERSION = 1;
 
     public static final String DATABASE_NAME = "feedthepanda.db";
-    public static final String TABLE_NAME = "posts";
+
+    public static final String TABLE_NAME_POST = "posts";
     public static final String COLUMN_POST_ID = "postid";
     public static final String COLUMN_POST_TITLE = "title";
     public static final String COLUMN_POST_DESCRIPTION = "description";
@@ -26,15 +29,38 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_POST_LINK = "link";
     public static final String COLUMN_POST_MADE_BY = "made_by";
     public static final String COLUMN_POST_CREATED_ON = "created_on";   // Type: Date
+    public static final String COLUMN_POST_IS_READ = "is_read";
+    //TODO Images Post
 
-    private static final String[] projection = {
+    public static final String TABLE_NAME_CHANNEL = "channels";
+    public static final String COLUMN_CHANNEL_ID = "channelid";
+    public static final String COLUMN_CHANNEL_TITLE = "title";
+    public static final String COLUMN_CHANNEL_DESCRIPTION = "description";
+    public static final String COLUMN_CHANNEL_SUBSCRIPTION_TYPE = "subscription_type";
+    public static final String COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED = "is_approved";
+    public static final String COLUMN_CHANNEL_RSS_LINK = "rss_link";
+    public static final String COLUMN_CHANNEL_IS_SUBSCRIBED = "is_subscribed";
+    // TODO Images Channel
+
+    private static final String[] post_projection = {
             COLUMN_POST_ID,
             COLUMN_POST_TITLE,
             COLUMN_POST_DESCRIPTION,
             COLUMN_POST_LINK,
             COLUMN_POST_MADE_BY,
             COLUMN_POST_CREATED_ON,
-            COLUMN_POST_TO_CHANNEL_ID
+            COLUMN_POST_TO_CHANNEL_ID,
+            COLUMN_POST_IS_READ
+    };
+
+    private static final String[] channel_projection = {
+            COLUMN_CHANNEL_ID,
+            COLUMN_CHANNEL_TITLE,
+            COLUMN_CHANNEL_DESCRIPTION,
+            COLUMN_CHANNEL_SUBSCRIPTION_TYPE,
+            COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED,
+            COLUMN_CHANNEL_RSS_LINK,
+            COLUMN_CHANNEL_IS_SUBSCRIBED,
     };
 
     public DBHelper(Context context) {
@@ -48,13 +74,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_POST);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_CHANNEL);
         onCreate(db);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE " + TABLE_NAME + " (" +
+        db.execSQL("CREATE TABLE " + TABLE_NAME_POST + " (" +
                         COLUMN_POST_ID + " INT NOT NULL PRIMARY KEY, " +
                         COLUMN_POST_TITLE + " VARCHAR(255) NOT NULL, " +
                         COLUMN_POST_DESCRIPTION + " VARCHAR(100000), " +
@@ -62,42 +89,123 @@ public class DBHelper extends SQLiteOpenHelper {
                         COLUMN_POST_LINK + " VARCHAR(255), " +
                         COLUMN_POST_MADE_BY + " VARCHAR(255), " +
                         COLUMN_POST_CREATED_ON + " VARCHAR(1024), " +
+                        COLUMN_POST_IS_READ + " BOOLEAN " +
+                        ");"
+        );
+
+        db.execSQL("CREATE TABLE " + TABLE_NAME_CHANNEL + " (" +
+                        COLUMN_CHANNEL_ID + " INT NOT NULL PRIMARY KEY, " +
+                        COLUMN_CHANNEL_TITLE + " VARCHAR(255) NOT NULL, " +
+                        COLUMN_CHANNEL_DESCRIPTION + " VARCHAR(100000), " +
+                        COLUMN_CHANNEL_SUBSCRIPTION_TYPE + " INT NOT NULL " +
+                        COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " BOOLEAN, " +
+                        COLUMN_CHANNEL_RSS_LINK + " VARCHAR(1000), " +
+                        COLUMN_CHANNEL_IS_SUBSCRIBED + " BOOLEAN " +
                         ");"
         );
     }
 
-    /*public boolean insertPost(Post post) {
+    public boolean insertPost(Post post) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_EVENT_ID, event.id);
-        contentValues.put(COLUMN_EVENT_NAME, event.name);
-        contentValues.put(COLUMN_CATEGORY_IDS, getCommaSeperatedCategories(event.categories));
-        contentValues.put(COLUMN_LAST_UPDATED, Event.parseDateToString(event.updated_at));
-        contentValues.put(COLUMN_IMAGE_URL, event.image_url);
-        contentValues.put(COLUMN_CONTACT, event.contact);
-        contentValues.put(COLUMN_IS_REGISTERED, event.registered);
-        contentValues.put(COLUMN_IS_TEAM_EVENT, event.team_event);
-        contentValues.put(COLUMN_TEAM_ID, event.team_id);
-        contentValues.put(COLUMN_EVENT_ELIGIBILITY, event.eligibility);
-        contentValues.put(COLUMN_EVENT_JUDGING, event.judging);
-        contentValues.put(COLUMN_EVENT_PRIZES, event.prizes);
-        contentValues.put(COLUMN_EVENT_RULES, event.rules);
-        contentValues.put(COLUMN_TEAM_SIZE, event.team_size);
-        contentValues.put(COLUMN_VENUE, event.venue);
-        contentValues.put(COLUMN_EVENT_DESCRIPTION, event.description);
-        contentValues.put(COLUMN_EVENT_DATE_TIME, Event.parseDateToString(event.event_date_time));
-        long check = db.insert(TABLE_NAME, null, contentValues);
+        contentValues.put(COLUMN_POST_ID, post.get_id());
+        contentValues.put(COLUMN_POST_TITLE, post.getHeading());
+        contentValues.put(COLUMN_POST_DESCRIPTION, post.getDescription());
+        contentValues.put(COLUMN_POST_MADE_BY, post.getMadeBy());
+        contentValues.put(COLUMN_POST_LINK, post.getLink());
+        contentValues.put(COLUMN_POST_CREATED_ON, post.getCreatedOn().toString());
+        contentValues.put(COLUMN_POST_TO_CHANNEL_ID, post.getChannel().get_id());
+        contentValues.put(COLUMN_POST_IS_READ, post.isRead());
+        long check = db.insert(TABLE_NAME_POST, null, contentValues);
         db.close();
         return check > 0;
     }
 
-    protected long saveBitmap(SQLiteDatabase database, Bitmap bmp) {
-        int size = bmp.getRowBytes() * bmp.getHeight();
-        ByteBuffer b = ByteBuffer.allocate(size); bmp.copyPixelsToBuffer(b);
-        byte[] bytes = new byte[size];
-        b.get(bytes, 0, bytes.length);
-        ContentValues cv=new ContentValues();
-        cv.put(CHUNK, bytes);
-        this.id= database.insert(TABLE, null, cv);
-    }*/
+    public boolean insertChannel(Channel channel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COLUMN_CHANNEL_ID, channel.get_id());
+        contentValues.put(COLUMN_CHANNEL_TITLE, channel.getName());
+        contentValues.put(COLUMN_CHANNEL_DESCRIPTION, channel.getDescription());
+        contentValues.put(COLUMN_CHANNEL_SUBSCRIPTION_TYPE, channel.getSubscriptionType().id);
+        contentValues.put(COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED, channel.isApproved());
+        contentValues.put(COLUMN_CHANNEL_RSS_LINK, channel.getRssLink());
+        contentValues.put(COLUMN_CHANNEL_IS_SUBSCRIBED, channel.isSubscribed());
+        long check = db.insert(TABLE_NAME_CHANNEL, null, contentValues);
+        db.close();
+        return check > 0;
+    }
+
+    public ArrayList<Post> getAllPosts() {
+        ArrayList<Post> posts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME_POST, null);
+        while(c.moveToNext()) {
+            posts.add(getPostFromCursor(c));
+        }
+        c.close();
+        db.close();
+        return posts;
+    }
+
+    private Post getPostFromCursor(Cursor c) {
+        if(c==null) {
+            return null;
+        }
+        int postId = c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_ID));
+        String postTitle = c.getString(c.getColumnIndexOrThrow(COLUMN_POST_TITLE));
+        String postDescription = c.getString(c.getColumnIndexOrThrow(COLUMN_POST_DESCRIPTION));
+        String postLink = c.getString(c.getColumnIndexOrThrow(COLUMN_POST_LINK));
+        String postMadeBy = c.getString(c.getColumnIndexOrThrow(COLUMN_POST_MADE_BY));
+        Date postcreatedOn = Post.StringToDateParser(c.getString(c.getColumnIndexOrThrow(COLUMN_POST_CREATED_ON)));
+//        Channel postChannel = getChannelFromID(c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_TO_CHANNEL_ID)));
+        Boolean postIsRead = returnBooleanFromInt(c.getInt(c.getColumnIndexOrThrow(COLUMN_POST_IS_READ)));
+//        Post post = new Post(postId, postTitle, postDescription, postMadeBy, postcreatedOn, postIsRead, postChannel);
+        Post post = new Post(postId, postTitle, postDescription, postMadeBy, postcreatedOn, postIsRead, null);
+        return post;
+    }
+
+    private boolean returnBooleanFromInt(int value) {
+        return value == 1;
+    }
+
+    public ArrayList<Channel> getAllChannels() {
+        ArrayList<Channel> channels = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT * FROM " + TABLE_NAME_CHANNEL, null);
+        while(c.moveToNext()) {
+            channels.add(getChannelFromCursor(c));
+        }
+        c.close();
+        db.close();
+        return channels;
+    }
+
+    private Channel getChannelFromCursor(Cursor c) {
+        if(c==null) {
+            return null;
+        }
+        int channelId = c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_ID));
+        String channelTitle = c.getString(c.getColumnIndexOrThrow(COLUMN_CHANNEL_TITLE));
+        String channelDescription = c.getString(c.getColumnIndexOrThrow(COLUMN_CHANNEL_DESCRIPTION));
+        ChannelSubscriptionType channelSubscriptionType = ChannelSubscriptionType.resolveToCategory(c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_SUBSCRIPTION_TYPE)));
+        Boolean channelIsMembershipApproved = returnBooleanFromInt(c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED)));
+        String rssLink = c.getString(c.getColumnIndexOrThrow(COLUMN_CHANNEL_RSS_LINK));
+        Boolean channelIsSubscribed = returnBooleanFromInt(c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_IS_SUBSCRIBED)));
+        Channel channel = new Channel(channelId, channelTitle, channelDescription, channelIsSubscribed, channelIsMembershipApproved, rssLink, channelSubscriptionType);
+        return channel;
+    }
+
+    //TODO
+    /*getPostAccordingToID
+    getChannelFromID
+    // getAllChannels
+    // getAllPosts
+    // insertPost
+    // insertChannel
+    modifyPost
+    modifyChannel
+*/
+    //TODO Images
+
 }

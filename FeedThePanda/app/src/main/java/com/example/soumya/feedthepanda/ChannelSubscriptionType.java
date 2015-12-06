@@ -13,14 +13,12 @@ public enum ChannelSubscriptionType {
     ChannelSubscriptionType(int id, String naturalName){ this.id = id; this.naturalName = naturalName; }
 
     public static ChannelSubscriptionType resolveToCategory(String what){
-        // Creating a map might not be justifiable for such a small input. Array linear search
-        // is efficient enough.
         for(ChannelSubscriptionType c: values()){
             if (what.equals(c.toString())){
                 return c;
             }
         }
-        Log.v("resolveToChannelSubscriptionType", "No ChannelSubscriptionType found for " + what + ". Reverting back to MEMBER");
+        Log.v("Extra", "No SubscriptionType found: " + what + ". Default MEMBER");
         return MEMBER;
     }
 

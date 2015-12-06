@@ -2,6 +2,8 @@ package com.example.soumya.feedthepanda;
 
 import com.leocardz.aelv.library.AelvListItem;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -41,6 +43,22 @@ public class Post extends AelvListItem{
         this.isRead = isRead;
         this.channel = channel;
         this.drawable = R.drawable.down_arrow;
+    }
+
+    public static Date StringToDateParser(String dateStr) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        try {
+            return sdf.parse(dateStr);
+        } catch (ParseException e) {
+            return new Date();
+        }
+    }
+
+    public void copyFrom(Post freshPost){
+        Post f = freshPost;
+        _id = f._id; heading = f.heading; description = f.description;
+        madeBy = f.madeBy; createdOn = f.createdOn; isRead = f.isRead;
+        channel = f.channel; drawable = f.drawable;
     }
 
     public String getHeading() {
@@ -105,5 +123,13 @@ public class Post extends AelvListItem{
 
     public void set_id(int _id) {
         this._id = _id;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
     }
 }
