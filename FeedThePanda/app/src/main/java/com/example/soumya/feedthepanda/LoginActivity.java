@@ -81,6 +81,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
             }
         });
 */
+        debugNetworkTasks();
     }
 
     protected void onStart() {
@@ -290,6 +291,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
 
     private void debugNetworkTasks()
     {
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("api_key", "97573526bc77a726077ea138ac6c62e5").commit();
         new getChannelsTask(this).execute();
         new getPostsOfChannelTask(this, new Channel(1, "")).execute();
         new getPostsTask(this).execute();

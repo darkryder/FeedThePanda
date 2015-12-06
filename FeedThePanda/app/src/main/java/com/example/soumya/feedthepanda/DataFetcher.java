@@ -248,7 +248,7 @@ class getChannelsTask extends AsyncTask<Void, Void, ArrayList<Channel>>
     @Override
     protected void onPostExecute(ArrayList<Channel> channels) {
         super.onPostExecute(channels);
-        Log.v("getChannelsTask", channels.toString());
+        Log.v("getChannelsTask", channels == null ? "null" : channels.toString());
     }
 }
 
@@ -264,7 +264,7 @@ class getPostsTask extends AsyncTask<Void, Void, ArrayList<Post>>
     @Override
     protected void onPostExecute(ArrayList<Post> posts) {
         super.onPostExecute(posts);
-        Log.v("getPostsTask", posts.toString());
+        Log.v("getPostsTask", posts == null ? "null" : posts.toString());
     }
 }
 
@@ -281,7 +281,7 @@ class getPostsOfChannelTask extends AsyncTask<Void, Void, ArrayList<Post>>
     @Override
     protected void onPostExecute(ArrayList<Post> posts) {
         super.onPostExecute(posts);
-        Log.v("PostsOfChannel", channel.toString() + ":" + posts.toString());
+        Log.v("PostsOfChannel", channel.toString() + ":" + posts == null ? "null" : posts.toString());
     }
 }
 
