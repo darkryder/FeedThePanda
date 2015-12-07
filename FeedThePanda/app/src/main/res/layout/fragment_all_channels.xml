@@ -35,6 +35,9 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="No Records"
-        android:visibility="gone" />
+        android:visibility="gone"
+        android:fontFamily="sans-serif-condensed"
+        android:textSize="18dp"
+        />
 
 </LinearLayout>

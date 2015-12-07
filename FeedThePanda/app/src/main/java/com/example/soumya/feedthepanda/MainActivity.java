@@ -48,6 +48,14 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        SharedPreferences pref = getSharedPreferences("DATA", Context.MODE_PRIVATE);
+        Boolean loogedIn = pref.getBoolean("loggedin", false);
+        if(!loogedIn) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+//            finish();
+        }
+
         Intent intent = new Intent(getApplicationContext(),
                 RegistrationIntentService.class);
         ComponentName name = startService(intent);
@@ -103,21 +111,10 @@ public class MainActivity extends AppCompatActivity
                         .commit();
                 break;
             case 1:
-                objFragment = new SubscribedChannelsFragment();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, objFragment)
-                        .commit();
-                break;
-            case 2:
                 objFragment = new AllChannelsFragment();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, objFragment)
                         .commit();
-                break;
-            case 3:
-                objFragment = new AboutMeFragment();
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
                 break;
         }
 
@@ -130,13 +127,7 @@ public class MainActivity extends AppCompatActivity
                 mTitle = getString(R.string.title_section1);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
                 mTitle = getString(R.string.title_section3);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section4);
                 break;
         }
     }
@@ -149,7 +140,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
@@ -160,9 +151,9 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -175,7 +166,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     /**
      * A placeholder fragment containing a simple view.

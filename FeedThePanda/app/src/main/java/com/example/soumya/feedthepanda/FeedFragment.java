@@ -45,6 +45,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
         objects = new ArrayList<Post>();
+
         mockItems();
 
         FeedAdapter taskAdapter = new FeedAdapter(getActivity(), R.layout.list_item_post, objects);
@@ -104,6 +105,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
 
         if(fetched)
         {
+            Log.v("Extra", fetched_posts.toString());
             objects = fetched_posts;
             Log.v("Extra", objects.toString());
             for(int i = 0; i < objects.size(); i++)

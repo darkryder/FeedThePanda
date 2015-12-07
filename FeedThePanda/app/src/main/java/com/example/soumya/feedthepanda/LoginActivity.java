@@ -224,6 +224,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
 
                 SharedPreferences pref = getSharedPreferences("DATA", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
+                editor.putBoolean("loggedin", true);
                 editor.putString("userName", personName);
                 editor.putString("userEmail", email);
                 editor.commit();
