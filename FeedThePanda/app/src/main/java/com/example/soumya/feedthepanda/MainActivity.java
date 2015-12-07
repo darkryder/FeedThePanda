@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +29,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private final ScheduledThreadPoolExecutor executor_ =
+            new ScheduledThreadPoolExecutor(1);
 
     // GCM Listener
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -211,10 +216,22 @@ public class MainActivity extends AppCompatActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+
     private void refreshDB()
     {
+        this.executor_.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                Log.v("Refresh", "Refreshing");
+                refreshDBHelper();
+            }
+        }, 0L, 2, TimeUnit.SECONDS);
+    }
+
+    private void refreshDBHelper()
+    {
         final DBHelper dbHelper = new DBHelper(this);
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("api_key", "279b41abea9a47d45e1bc416d89a465c").commit();
+//        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("api_key", "279b41abea9a47d45e1bc416d89a465c").commit();
 
         DataHolder.channels = dbHelper.getAllChannels();
         DataHolder.feed = dbHelper.getAllPosts();
