@@ -29,8 +29,8 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_all_channels, container, false);
 
-        channelEmptyView = (TextView) getActivity().findViewById(R.id.empty_view);
-        mRecyclerView = (RecyclerView) getActivity().findViewById(R.id.my_recycler_view);
+        channelEmptyView = (TextView) rootView.findViewById(R.id.empty_view);
+        mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
 
         // Layout Managers:
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -40,6 +40,7 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
         // mRecyclerView.setItemAnimator(new FadeInLeftAnimator());
 
         objects = new ArrayList<Channel>();
+
         mockItems();
 
         if (objects.isEmpty()) {
@@ -53,7 +54,6 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
 
         // Creating Adapter object
         ChannelAdapter mAdapter = new ChannelAdapter(getActivity(), objects);
-
 
         // Setting Mode to Single to reveal bottom View for one item in List
         // Setting Mode to Mutliple to reveal bottom Views for multile items in List

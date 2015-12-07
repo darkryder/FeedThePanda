@@ -31,20 +31,16 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
         SwipeLayout swipeLayout;
         TextView channelName;
         TextView channelDescription;
-        TextView channelDelete;
-        TextView channelJoin;
+        TextView channelToggleSubscription;
         TextView channelShare;
-        ImageButton btnLocation;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
             swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe);
             channelName = (TextView) itemView.findViewById(R.id.channelName);
             channelDescription = (TextView) itemView.findViewById(R.id.channelDescription);
-            channelDelete = (TextView) itemView.findViewById(R.id.channelDelete);
-            channelJoin = (TextView) itemView.findViewById(R.id.channelJoin);
+            channelToggleSubscription = (TextView) itemView.findViewById(R.id.channelToggleSubscription);
             channelShare = (TextView) itemView.findViewById(R.id.channelShare);
-            btnLocation = (ImageButton) itemView.findViewById(R.id.btnLocation);
         }
     }
 
@@ -68,12 +64,8 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
-        // Drag From Left
-        viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Left, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper1));
-
         // Drag From Right
         viewHolder.swipeLayout.addDrag(SwipeLayout.DragEdge.Right, viewHolder.swipeLayout.findViewById(R.id.bottom_wrapper));
-
 
         // Handling different events when swiping
         viewHolder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
@@ -130,14 +122,6 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
         });
 
 
-        viewHolder.btnLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Clicked on Map " + viewHolder.channelName.getText().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
         viewHolder.channelShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,27 +130,13 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
             }
         });
 
-        viewHolder.channelJoin.setOnClickListener(new View.OnClickListener() {
+        viewHolder.channelToggleSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Toast.makeText(view.getContext(), "Clicked on Edit  " + viewHolder.channelName.getText().toString(), Toast.LENGTH_SHORT).show();
+
             }
         });
-
-
-        viewHolder.channelDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mItemManger.removeShownLayouts(viewHolder.swipeLayout);
-                objects.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, objects.size());
-                mItemManger.closeAllItems();
-                Toast.makeText(view.getContext(), "Deleted " + viewHolder.channelName.getText().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
 
         // mItemManger is member in RecyclerSwipeAdapter Class
         mItemManger.bindView(viewHolder.itemView, position);

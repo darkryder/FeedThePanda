@@ -22,17 +22,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#777"
-        android:elevation="8dp"
-        android:minHeight="?attr/actionBarSize">
-        <!--style="@style/ToolBarStyle"-->
-
-    </android.support.v7.widget.Toolbar>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"
         android:layout_width="match_parent"
@@ -47,6 +36,5 @@
         android:gravity="center"
         android:text="No Records"
         android:visibility="gone" />
-
 
 </LinearLayout>

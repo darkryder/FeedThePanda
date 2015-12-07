@@ -9,4 +9,7 @@
     <color name="textColorSecondary">#727272</color>
     <color name="colorDivider">#B6B6B6</color>
 
+    <color name="Yes">#43A047</color>
+    <color name="No">#f44336</color>
+
 </resources>

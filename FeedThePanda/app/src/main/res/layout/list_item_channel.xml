@@ -13,17 +13,7 @@
         android:id="@+id/bottom_wrapper"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:weightSum="3">
-
-        <TextView
-            android:id="@+id/channelJoin"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#0076a5"
-            android:gravity="center"
-            android:text="Edit"
-            android:textColor="#fff" />
+        android:weightSum="2">
 
         <TextView
             android:id="@+id/channelShare"
@@ -36,11 +26,11 @@
             android:textColor="#fff" />
 
         <TextView
-            android:id="@+id/channelDelete"
+            android:id="@+id/channelToggleSubscription"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#0076a5"
+            android:background="@color/Yes"
             android:gravity="center"
             android:text="Delete"
             android:textColor="#fff" />
@@ -48,7 +38,7 @@
 
 
     <!-- Another Bottom View For Left to Right -->
-
+<!--
     <LinearLayout
         android:id="@+id/bottom_wrapper1"
         android:layout_width="80dp"
@@ -63,7 +53,7 @@
             android:background="@null"
             android:gravity="center"
             android:src="@drawable/mr_ic_audio_vol" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <!-- Top View,  Row itemView of RecyclerView -->
     <LinearLayout
@@ -89,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
             android:layout_margin="5dp"
-            android:text="Email Id"
+            android:text="Description"
             android:textColor="@android:color/black"
             android:textSize="12sp" />
     </LinearLayout>
