@@ -27,6 +27,8 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -48,12 +50,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences pref = getSharedPreferences("DATA", Context.MODE_PRIVATE);
-        Boolean loogedIn = pref.getBoolean("loggedin", false);
-        if(!loogedIn) {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-//            finish();
+        Boolean logged_in = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("logged_in", false);
+        if (!logged_in)
+        {
+            Intent login = new Intent(this, LoginActivity.class);
+            login.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(login);
         }
 
         Intent intent = new Intent(getApplicationContext(),
@@ -83,6 +85,8 @@ public class MainActivity extends AppCompatActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        refreshDB();
     }
 
     @Override
@@ -207,5 +211,53 @@ public class MainActivity extends AppCompatActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+    private void refreshDB()
+    {
+        final DBHelper dbHelper = new DBHelper(this);
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("api_key", "279b41abea9a47d45e1bc416d89a465c").commit();
 
+        DataHolder.channels = dbHelper.getAllChannels();
+        DataHolder.feed = dbHelper.getAllPosts();
+
+        final getPostsTask getFeedTask = new getPostsTask(this){
+            @Override
+            protected void onPostExecute(ArrayList<Post> posts) {
+                super.onPostExecute(posts);
+                if(posts == null) return;
+                if(DataHolder.feed == null) DataHolder.feed= new ArrayList<>();
+                for(Post post: posts){
+                    DataHolder.feed.add(post);
+                    if(dbHelper.getPostFromID(post.get_id()) == null){
+                        dbHelper.insertPost(post);
+                        Log.v("refreshDB", "Inserting " + post);
+                    } else{
+                        dbHelper.modifyPost(post);
+                        Log.v("refreshDB", "Modifying " + post);
+
+                    }
+                }
+            }
+        };
+        getChannelsTask channelsTask = new getChannelsTask(this){
+            @Override
+            protected void onPostExecute(ArrayList<Channel> channels) {
+                super.onPostExecute(channels);
+                if (channels == null) return;
+                if (DataHolder.channels == null ) DataHolder.channels = new ArrayList<>();
+                for(Channel channel: channels){
+                    DataHolder.channels.add(channel);
+                    if (dbHelper.getChannelFromID(channel.get_id()) == null){
+                        dbHelper.insertChannel(channel);
+                        Log.v("refreshDB", "Inserting " + channel);
+                    } else {
+                        dbHelper.modifyChannel(channel);
+                        Log.v("refreshDB", "Modifying " + channel);
+                    }
+                }
+                // run this afterwards because db has a dependency.
+                getFeedTask.executeOnExecutor(THREAD_POOL_EXECUTOR);
+            }
+        };
+        channelsTask.execute(); // will automatically call refreshFeedTaskInDb
+    }
 }

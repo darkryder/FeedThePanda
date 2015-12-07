@@ -3,6 +3,7 @@ package com.example.soumya.feedthepanda;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
@@ -183,7 +184,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private Channel getChannelFromCursor(Cursor c) {
-        if(c==null) {
+        if(c==null || c.getCount() <= 0) {
             return null;
         }
         int channelId = c.getInt(c.getColumnIndexOrThrow(COLUMN_CHANNEL_ID));
@@ -208,7 +209,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 null,
                 null
         );
-        if(c==null) {
+        if(c==null || c.getCount() <= 0) {
             db.close();
             return null;
         }
@@ -230,7 +231,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 null,
                 null
         );
-        if(c==null) {
+        if(c==null || c.getCount() <= 0) {
             db.close();
             return null;
         }
@@ -244,9 +245,9 @@ public class DBHelper extends SQLiteOpenHelper {
     public void modifyPost(Post freshPost) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_NAME_POST + " SET " +
-                COLUMN_POST_TITLE + " = \"" + freshPost.getHeading() + "\", " +
-                COLUMN_POST_DESCRIPTION + " = \"" + freshPost.getDescription() + "\", " +
-                COLUMN_POST_LINK + " = \"" + freshPost.getLink() + "\", " +
+                COLUMN_POST_TITLE + " = \"" + DatabaseUtils.sqlEscapeString(freshPost.getHeading()) + "\", " +
+                COLUMN_POST_DESCRIPTION + " = \"" + DatabaseUtils.sqlEscapeString(freshPost.getDescription()) + "\", " +
+                COLUMN_POST_LINK + " = \"" + DatabaseUtils.sqlEscapeString(freshPost.getLink()) + "\", " +
                 COLUMN_POST_MADE_BY + " = \"" + freshPost.getMadeBy() + "\", " +
                 COLUMN_POST_CREATED_ON + " = \"" + freshPost.getCreatedOn().toString() + "\", " +
                 COLUMN_POST_TO_CHANNEL_ID + " = " + freshPost.getChannel().get_id() + ", " +
@@ -260,11 +261,11 @@ public class DBHelper extends SQLiteOpenHelper {
     public void modifyChannel(Channel freshChannel) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE " + TABLE_NAME_CHANNEL + " SET " +
-                COLUMN_CHANNEL_TITLE + " = \"" + freshChannel.getName() + "\", " +
-                COLUMN_CHANNEL_DESCRIPTION + " = \"" + freshChannel.getDescription() + "\", " +
+                COLUMN_CHANNEL_TITLE + " = \"" + DatabaseUtils.sqlEscapeString(freshChannel.getName()) + "\", " +
+                COLUMN_CHANNEL_DESCRIPTION + " = \"" + DatabaseUtils.sqlEscapeString(freshChannel.getDescription()) + "\", " +
                 COLUMN_CHANNEL_SUBSCRIPTION_TYPE + " = " + freshChannel.getSubscriptionType().id + ", " +
                 COLUMN_CHANNEL_IS_MEMBERSHIP_APPROVED + " = " + Integer.toString(freshChannel.isApproved()?1:0) + ", " +
-                COLUMN_CHANNEL_RSS_LINK + " = \"" + freshChannel.getRssLink() + "\", " +
+                COLUMN_CHANNEL_RSS_LINK + " = \"" + DatabaseUtils.sqlEscapeString(freshChannel.getRssLink()) + "\", " +
                 COLUMN_CHANNEL_IS_SUBSCRIBED + " = " + Integer.toString(freshChannel.isSubscribed()?1:0) +  " " +
                 " WHERE " + COLUMN_CHANNEL_ID + " = " + freshChannel.get_id() +
                 ";");

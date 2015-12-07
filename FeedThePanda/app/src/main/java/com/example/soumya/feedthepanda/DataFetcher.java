@@ -54,6 +54,7 @@ public class DataFetcher {
                     urlConnection.setRequestProperty(i, params.get(i));
                 }
             }
+            urlConnection.setRequestProperty("api_key", api);
         }
         if(!POST) urlConnection.setRequestMethod("GET");
         urlConnection.connect();
@@ -85,7 +86,10 @@ public class DataFetcher {
             for(int i = 0; i < jsonArrayResponse.length(); i++){
                 JSONObject channelObj = jsonArrayResponse.getJSONObject(i);
                 // TODO
-                Channel channel = new Channel(1,"");
+                Channel channel = new Channel(channelObj.getInt("id"), channelObj.getString("name"),
+                        channelObj.getString("description"), channelObj.getBoolean("subscribed"),
+                        channelObj.getBoolean("approved"), channelObj.getString("rss_link"),
+                        ChannelSubscriptionType.resolveToCategory(channelObj.getString("post_type")));
                 channels.add(channel);
             }
         } catch (IOException e)
@@ -115,12 +119,24 @@ public class DataFetcher {
             for(int i = 0; i < jsonResponse.length(); i++)
             {
                 JSONObject small = jsonResponse.getJSONObject(i);
+
+                Channel channel = null;
+                if (DataHolder.channels != null) {
+                    for (int j = 0; j < DataHolder.channels.size(); j++) {
+                        if (small.getInt("channel_id") == DataHolder.channels.get(j).get_id()) {
+                            channel = DataHolder.channels.get(j);
+                            break;
+                        }
+                    }
+                }
+                if (channel == null) channel = new Channel(1, "Default");
+
                 posts.add(new Post(
                         small.getInt("id"),
                         small.getString("title"),
                         small.getString("description"),
                         sdf.parse(small.getString("created_at")),
-                        new Channel(1, "")
+                        channel
                 ));
             }
             Log.i("InfoFetch", posts.toString());

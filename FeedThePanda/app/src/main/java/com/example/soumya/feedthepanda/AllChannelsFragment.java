@@ -40,9 +40,10 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_btn_borderless_material)));
         // mRecyclerView.setItemAnimator(new FadeInLeftAnimator());
 
-        objects = new ArrayList<Channel>();
+//        objects = new ArrayList<Channel>();
+        objects = DataHolder.channels;
 
-        mockItems();
+//        mockItems();
 
         if (objects.isEmpty()) {
             mRecyclerView.setVisibility(View.GONE);
@@ -84,17 +85,23 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
     }
 
     public void mockItems() {
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
+        if(objects == null){
+            objects = new ArrayList<>();
+        }
+        if (objects.size() == 0)
+        {
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+        }
     }
 }

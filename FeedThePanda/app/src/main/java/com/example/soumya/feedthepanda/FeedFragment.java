@@ -1,31 +1,17 @@
 package com.example.soumya.feedthepanda;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.Toast;
 
 import com.leocardz.aelv.library.Aelv;
 import com.leocardz.aelv.library.AelvCustomAction;
 import com.twotoasters.jazzylistview.JazzyListView;
 import com.twotoasters.jazzylistview.effects.CardsEffect;
-import com.twotoasters.jazzylistview.effects.SlideInEffect;
-import com.twotoasters.jazzylistview.effects.WaveEffect;
-import com.twotoasters.jazzylistview.effects.ZipperEffect;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -35,9 +21,6 @@ public class FeedFragment extends android.support.v4.app.Fragment {
     private static ArrayList<Post> objects;
     View rootView;
 
-    private static boolean fetched = false;
-    private static ArrayList<Post> fetched_posts = null;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -45,8 +28,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
         objects = new ArrayList<Post>();
-
-        mockItems();
+        setFeed();
 
         FeedAdapter taskAdapter = new FeedAdapter(getActivity(), R.layout.list_item_post, objects);
         JazzyListView listView = (JazzyListView) rootView.findViewById(R.id.listview_posts);
@@ -95,18 +77,14 @@ public class FeedFragment extends android.support.v4.app.Fragment {
         return rootView;
     }
 
-    private void mockItems() {
+    private void setFeed() {
 
         final int COLLAPSED_HEIGHT_1 = 150, COLLAPSED_HEIGHT_2 = 200, COLLAPSED_HEIGHT_3 = 250;
         final int EXPANDED_HEIGHT_1 = 250, EXPANDED_HEIGHT_2 = 300, EXPANDED_HEIGHT_3 = 350, EXPANDED_HEIGHT_4 = 400;
 
-        FetchPosts task = new FetchPosts(getActivity());
-        task.execute();
-
-        if(fetched)
+        if(DataHolder.feed != null && DataHolder.feed.size() != 0)
         {
-            Log.v("Extra", fetched_posts.toString());
-            objects = fetched_posts;
+            objects = DataHolder.feed;
             Log.v("Extra", objects.toString());
             for(int i = 0; i < objects.size(); i++)
             {
@@ -119,7 +97,7 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
         }
 
-        if (!fetched)
+        else
         {
             Post listItem = new Post(1, "Bleh", "How Are you?", new Date(), new Channel(3, "Sheetu"));
             // setUp IS REQUIRED
@@ -227,27 +205,6 @@ public class FeedFragment extends android.support.v4.app.Fragment {
             }
             objects.add(listItem);
             Log.v("Extra", objects.toString());
-        }
-    }
-
-
-    private class FetchPosts extends AsyncTask<Void, Void, ArrayList<Post>>
-    {
-        Context c;
-        public FetchPosts(Context c) {this.c = c;}
-
-        @Override
-        protected ArrayList<Post> doInBackground(Void... params) {
-            return DataFetcher.getPostsHelper(PreferenceManager.getDefaultSharedPreferences(c).getString("api_key", "nope"));
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Post> posts) {
-            super.onPostExecute(posts);
-//            Log.v("Extra", posts.toString() + fetched + fetched_posts.toString());
-            objects = posts;
-            fetched = true;
-            fetched_posts = posts;
         }
     }
 }

@@ -13,9 +13,9 @@
         android:id="@+id/bottom_wrapper"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:weightSum="2">
+        android:weightSum="1">
 
-        <TextView
+<!--        <TextView
             android:id="@+id/channelShare"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -27,6 +27,8 @@
             android:fontFamily="sans-serif-condensed"
             android:textSize="14dp"
             />
+            -->
+
 
         <TextView
             android:id="@+id/channelToggleSubscription"

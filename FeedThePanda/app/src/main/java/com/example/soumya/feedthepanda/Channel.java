@@ -33,11 +33,11 @@ public class Channel {
 
     public Channel(int id, String name, String description, boolean isSubscribed, boolean isApproved, String rssLink, ChannelSubscriptionType subscriptionType) {
         this._id = id;
-        this.name = name;
-        this.description = description;
+        this.name = name.replaceAll("\"", "\'");
+        this.description = description == null ? null : description.replaceAll("\"", "\'");
         this.isSubscribed = isSubscribed;
         this.approved = isApproved;
-        this.rssLink = rssLink;
+        this.rssLink = rssLink == null ? null : rssLink.replaceAll("\"", "\'");
         this.subscriptionType = subscriptionType;
     }
 
@@ -61,6 +61,7 @@ public class Channel {
     }
 
     public void setName(String name) {
+        name = name.replaceAll("\"", "\'");
         this.name = name;
     }
 
@@ -69,6 +70,7 @@ public class Channel {
     }
 
     public void setDescription(String description) {
+        description= description.replaceAll("\"", "\'");
         this.description = description;
     }
 
