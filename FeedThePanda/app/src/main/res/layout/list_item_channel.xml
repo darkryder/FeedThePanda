@@ -13,9 +13,9 @@
         android:id="@+id/bottom_wrapper"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:weightSum="2">
+        android:weightSum="1">
 
-        <TextView
+<!--        <TextView
             android:id="@+id/channelShare"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -23,7 +23,12 @@
             android:background="#003c54"
             android:gravity="center"
             android:text="Share"
-            android:textColor="#fff" />
+            android:textColor="#fff"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="14dp"
+            />
+            -->
+
 
         <TextView
             android:id="@+id/channelToggleSubscription"
@@ -33,7 +38,10 @@
             android:background="@color/Yes"
             android:gravity="center"
             android:text="Delete"
-            android:textColor="#fff" />
+            android:textColor="#fff"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="14dp"
+            />
     </LinearLayout>
 
 
@@ -71,7 +79,9 @@
             android:layout_margin="5dp"
             android:text="Name"
             android:textColor="@android:color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:fontFamily="sans-serif-condensed"
+            />
 
         <TextView
             android:id="@+id/channelDescription"
@@ -81,7 +91,9 @@
             android:layout_margin="5dp"
             android:text="Description"
             android:textColor="@android:color/black"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:fontFamily="sans-serif-condensed"
+            />
     </LinearLayout>
 
 </com.daimajia.swipe.SwipeLayout>

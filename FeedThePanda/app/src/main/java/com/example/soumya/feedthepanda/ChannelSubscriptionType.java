@@ -14,7 +14,7 @@ public enum ChannelSubscriptionType {
 
     public static ChannelSubscriptionType resolveToCategory(String what){
         for(ChannelSubscriptionType c: values()){
-            if (what.equals(c.toString())){
+            if (what.toLowerCase().equals(c.toString().toLowerCase())){
                 return c;
             }
         }

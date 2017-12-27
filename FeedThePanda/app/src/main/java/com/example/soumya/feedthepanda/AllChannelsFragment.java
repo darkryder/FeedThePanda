@@ -1,6 +1,7 @@
 package com.example.soumya.feedthepanda;
 
 import android.os.Bundle;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -39,9 +40,10 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(getResources().getDrawable(R.drawable.abc_btn_borderless_material)));
         // mRecyclerView.setItemAnimator(new FadeInLeftAnimator());
 
-        objects = new ArrayList<Channel>();
+//        objects = new ArrayList<Channel>();
+        objects = DataHolder.channels;
 
-        mockItems();
+//        mockItems();
 
         if (objects.isEmpty()) {
             mRecyclerView.setVisibility(View.GONE);
@@ -83,17 +85,23 @@ public class AllChannelsFragment extends android.support.v4.app.Fragment {
     }
 
     public void mockItems() {
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
-        objects.add(new Channel(1, "Sheetu"));
-        objects.add(new Channel(2, "FindMyStuff"));
-        objects.add(new Channel(3, "IIITD"));
+        if(objects == null){
+            objects = new ArrayList<>();
+        }
+        if (objects.size() == 0)
+        {
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+            objects.add(new Channel(1, "Sheetu"));
+            objects.add(new Channel(2, "FindMyStuff"));
+            objects.add(new Channel(3, "IIITD"));
+        }
     }
 }

@@ -42,7 +42,7 @@ import java.util.Date;
 public class LoginActivity extends Activity implements View.OnClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "Extra LoginActivity";
-    private GoogleApiClient mGoogleApiClient;
+    private static GoogleApiClient mGoogleApiClient;
 
     private static final int RC_SIGN_IN =0;
     Bundle b = new Bundle();
@@ -83,8 +83,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
             }
         });
 */
-        debugNetworkTasks();
-        debugDBTasks();
+//        debugNetworkTasks();
+//        debugDBTasks();
     }
 
     protected void onStart() {
@@ -108,7 +108,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
     public void onConnected(Bundle bundle) {
         String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
         if(email.endsWith("@iiitd.ac.in")) {
-            Toast.makeText(this, "User is connected, Yay!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show();
             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 
             // Get user's information
@@ -224,6 +224,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
 
                 SharedPreferences pref = getSharedPreferences("DATA", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = pref.edit();
+                editor.putBoolean("loggedin", true);
                 editor.putString("userName", personName);
                 editor.putString("userEmail", email);
                 editor.commit();
@@ -277,7 +278,13 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
                 Log.i("Extra", token + jsonResponse);
                 Log.i("Extra", "3");
 
-                PreferenceManager.getDefaultSharedPreferences(context).edit().putString("api_key", token).commit();
+                PreferenceManager.getDefaultSharedPreferences(context).edit()
+                        .putString("api_key", token)
+                        .putBoolean("logged_in", true)
+                        .commit();
+                Intent mainActivity = new Intent(context,MainActivity.class);
+                mainActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(mainActivity);
                 return true;
             } catch (IOException e)
             {
@@ -294,7 +301,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Goo
 
     private void debugNetworkTasks()
     {
-        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("api_key", "97573526bc77a726077ea138ac6c62e5").commit();
         new getChannelsTask(this).execute();
         new getPostsOfChannelTask(this, new Channel(1, "")).execute();
         new getPostsTask(this).execute();

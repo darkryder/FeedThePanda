@@ -21,7 +21,10 @@
             android:paddingRight="10px"
             android:paddingBottom="10px"
             android:textStyle="bold"
-            android:id="@+id/headingTextView"/>
+            android:id="@+id/headingTextView"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="18dp"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -32,7 +35,10 @@
             android:paddingRight="10px"
             android:paddingBottom="10px"
             android:textStyle="italic"
-            android:id="@+id/descriptionTextView"/>
+            android:id="@+id/descriptionTextView"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="14dp"
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -43,17 +49,9 @@
             android:paddingRight="10px"
             android:paddingBottom="10px"
             android:textStyle="italic"
-            android:id="@+id/dateTextView"/>
+            android:id="@+id/dateTextView"
+            android:fontFamily="sans-serif-condensed"
+            android:textSize="14dp"
+            />
     </LinearLayout>
-
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="46dp"
-        android:id="@+id/readCheckBox"
-        android:clickable="true"
-        android:enabled="true"
-        android:layout_gravity="center_horizontal|right"
-        android:layout_marginLeft="10px"
-        android:layout_marginTop="10px"
-        android:layout_marginRight="10px" />
 </LinearLayout>

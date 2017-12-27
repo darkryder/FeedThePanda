@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +28,10 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
@@ -39,6 +44,8 @@ public class MainActivity extends AppCompatActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private final ScheduledThreadPoolExecutor executor_ =
+            new ScheduledThreadPoolExecutor(1);
 
     // GCM Listener
     private BroadcastReceiver mRegistrationBroadcastReceiver;
@@ -47,6 +54,14 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Boolean logged_in = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("logged_in", false);
+        if (!logged_in)
+        {
+            Intent login = new Intent(this, LoginActivity.class);
+            login.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(login);
+        }
 
         Intent intent = new Intent(getApplicationContext(),
                 RegistrationIntentService.class);
@@ -75,6 +90,8 @@ public class MainActivity extends AppCompatActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        refreshDB();
     }
 
     @Override
@@ -103,21 +120,10 @@ public class MainActivity extends AppCompatActivity
                         .commit();
                 break;
             case 1:
-                objFragment = new SubscribedChannelsFragment();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, objFragment)
-                        .commit();
-                break;
-            case 2:
                 objFragment = new AllChannelsFragment();
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, objFragment)
                         .commit();
-                break;
-            case 3:
-                objFragment = new AboutMeFragment();
-                Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(i);
                 break;
         }
 
@@ -130,13 +136,7 @@ public class MainActivity extends AppCompatActivity
                 mTitle = getString(R.string.title_section1);
                 break;
             case 2:
-                mTitle = getString(R.string.title_section2);
-                break;
-            case 3:
                 mTitle = getString(R.string.title_section3);
-                break;
-            case 4:
-                mTitle = getString(R.string.title_section4);
                 break;
         }
     }
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    @Override
+    /*@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (!mNavigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
@@ -160,9 +160,9 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return super.onCreateOptionsMenu(menu);
-    }
+    }*/
 
-    @Override
+    /*@Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
+    }*/
 
     /**
      * A placeholder fragment containing a simple view.
@@ -217,4 +217,64 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    private void refreshDB()
+    {
+        this.executor_.scheduleWithFixedDelay(new Runnable() {
+            @Override
+            public void run() {
+                Log.v("Refresh", "Refreshing");
+                refreshDBHelper();
+            }
+        }, 0L, 2, TimeUnit.SECONDS);
+    }
+
+    private void refreshDBHelper()
+    {
+        final DBHelper dbHelper = new DBHelper(this);
+//        PreferenceManager.getDefaultSharedPreferences(this).edit().putString("api_key", "279b41abea9a47d45e1bc416d89a465c").commit();
+
+        DataHolder.channels = dbHelper.getAllChannels();
+        DataHolder.feed = dbHelper.getAllPosts();
+
+        final getPostsTask getFeedTask = new getPostsTask(this){
+            @Override
+            protected void onPostExecute(ArrayList<Post> posts) {
+                super.onPostExecute(posts);
+                if(posts == null) return;
+                if(DataHolder.feed == null) DataHolder.feed= new ArrayList<>();
+                for(Post post: posts){
+                    DataHolder.feed.add(post);
+                    if(dbHelper.getPostFromID(post.get_id()) == null){
+                        dbHelper.insertPost(post);
+                        Log.v("refreshDB", "Inserting " + post);
+                    } else{
+                        dbHelper.modifyPost(post);
+                        Log.v("refreshDB", "Modifying " + post);
+
+                    }
+                }
+            }
+        };
+        getChannelsTask channelsTask = new getChannelsTask(this){
+            @Override
+            protected void onPostExecute(ArrayList<Channel> channels) {
+                super.onPostExecute(channels);
+                if (channels == null) return;
+                if (DataHolder.channels == null ) DataHolder.channels = new ArrayList<>();
+                for(Channel channel: channels){
+                    DataHolder.channels.add(channel);
+                    if (dbHelper.getChannelFromID(channel.get_id()) == null){
+                        dbHelper.insertChannel(channel);
+                        Log.v("refreshDB", "Inserting " + channel);
+                    } else {
+                        dbHelper.modifyChannel(channel);
+                        Log.v("refreshDB", "Modifying " + channel);
+                    }
+                }
+                // run this afterwards because db has a dependency.
+                getFeedTask.executeOnExecutor(THREAD_POOL_EXECUTOR);
+            }
+        };
+        channelsTask.execute(); // will automatically call refreshFeedTaskInDb
+    }
 }

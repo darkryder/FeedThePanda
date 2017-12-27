@@ -36,8 +36,8 @@ public class Post extends AelvListItem{
     public Post(int id, String heading, String description, String madeBy, Date createdOn, boolean isRead, Channel channel) {
         super();
         this._id = id;
-        this.heading = heading;
-        this.description = description;
+        this.heading = heading == null ? null : heading.replaceAll("\"", "\'");
+        this.description = description == null ? null : description.replaceAll("\"", "\'");
         this.madeBy = madeBy;
         this.createdOn = createdOn;
         this.isRead = isRead;
@@ -66,6 +66,7 @@ public class Post extends AelvListItem{
     }
 
     public void setHeading(String heading) {
+        heading = heading.replaceAll("\"", "\'");
         this.heading = heading;
     }
 
@@ -74,6 +75,7 @@ public class Post extends AelvListItem{
     }
 
     public void setDescription(String description) {
+        description = description.replaceAll("\"", "\'");
         this.description = description;
     }
 

@@ -30,7 +30,6 @@ public class FeedAdapter extends ArrayAdapter {
         TextView headingTextView;
         TextView descriptionTextView;
         TextView dateTextView;
-        CheckBox readCheckBox;
         public ViewHolder() {
             super();
         }
@@ -68,7 +67,6 @@ public class FeedAdapter extends ArrayAdapter {
             holder.headingTextView = (TextView) convertView.findViewById(R.id.headingTextView);
             holder.descriptionTextView = (TextView) convertView.findViewById(R.id.descriptionTextView);
             holder.dateTextView = (TextView) convertView.findViewById(R.id.dateTextView);
-            holder.readCheckBox = (CheckBox) convertView.findViewById(R.id.readCheckBox);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -79,7 +77,6 @@ public class FeedAdapter extends ArrayAdapter {
 
         holder.descriptionTextView.setText(post.getDescription());
         holder.dateTextView.setText(post.getCreatedOn().toString());
-        holder.readCheckBox.setChecked(post.isRead());
         post.setHolder(holder);
 
         return convertView;

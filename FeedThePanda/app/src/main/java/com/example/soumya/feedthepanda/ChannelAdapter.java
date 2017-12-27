@@ -1,7 +1,9 @@
 package com.example.soumya.feedthepanda;
 
 import android.content.Context;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +34,6 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
         TextView channelName;
         TextView channelDescription;
         TextView channelToggleSubscription;
-        TextView channelShare;
 
         public SimpleViewHolder(View itemView) {
             super(itemView);
@@ -40,7 +41,6 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
             channelName = (TextView) itemView.findViewById(R.id.channelName);
             channelDescription = (TextView) itemView.findViewById(R.id.channelDescription);
             channelToggleSubscription = (TextView) itemView.findViewById(R.id.channelToggleSubscription);
-            channelShare = (TextView) itemView.findViewById(R.id.channelShare);
         }
     }
 
@@ -59,8 +59,9 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
     public void onBindViewHolder(final SimpleViewHolder viewHolder, final int position) {
         final Channel item = objects.get(position);
 
-        viewHolder.channelName.setText((item.getName()) + "  -  Row Position " + position);
+        viewHolder.channelName.setText(item.getName());
         viewHolder.channelDescription.setText(item.getDescription());
+        viewHolder.channelToggleSubscription.setText(item.isSubscribed() ? "Unsubscribe" : "Subscribe");
 
         viewHolder.swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
 
@@ -100,41 +101,59 @@ public class ChannelAdapter extends RecyclerSwipeAdapter<ChannelAdapter.SimpleVi
             }
         });
 
-        /*viewHolder.swipeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                if ((((SwipeLayout) v).getOpenStatus() == SwipeLayout.Status.Close)) {
-                    //Start your activity
-
-                    Toast.makeText(mContext, " onClick : " + item.getName() + " \n" + item.getEmailId(), Toast.LENGTH_SHORT).show();
-                }
-
-            }
-        });*/
-
         viewHolder.swipeLayout.getSurfaceView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, " onClick : " + item.getName() + " \n" + item.getDescription(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, " onClick : " + item.getName() + " \n" + item.getDescription(), Toast.LENGTH_SHORT).show();
             }
         });
 
-
-        viewHolder.channelShare.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Toast.makeText(view.getContext(), "Clicked on Share " + viewHolder.channelName.getText().toString(), Toast.LENGTH_SHORT).show();
-            }
-        });
 
         viewHolder.channelToggleSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Clicked on Edit  " + viewHolder.channelName.getText().toString(), Toast.LENGTH_SHORT).show();
+                String name = viewHolder.channelName.getText().toString();
+                Channel channel = null;
 
+                for(int i = 0; i < DataHolder.channels.size(); i++){
+                    if (DataHolder.channels.get(i).getName().equals(name)){
+                        channel = DataHolder.channels.get(i);
+                        break;
+                    }
+                }
+                final Channel selected = channel;
+                if (channel == null){
+                    Log.v("Subscribe", "Could not find channel " + name);
+                    return;
+                }
+
+                if(!item.isSubscribed()){
+                    Toast.makeText(view.getContext(), "Joining " + viewHolder.channelName.getText().toString(), Toast.LENGTH_SHORT).show();
+                    subscribeToChannelTask task = new subscribeToChannelTask(mContext, channel.get_id()){
+                        @Override
+                        protected void onPostExecute(Boolean aBoolean) {
+                            Log.v("subscribe", aBoolean + "");
+                            super.onPostExecute(aBoolean);
+                            selected.setIsSubscribed(true);
+                            DBHelper dbHelper = new DBHelper(context);
+                            dbHelper.modifyChannel(selected);
+                        }
+                    };
+                    task.execute();
+                } else {
+                    Toast.makeText(view.getContext(), "Leaving " + viewHolder.channelName.getText().toString(), Toast.LENGTH_SHORT).show();
+                    unsubscribeToChannelTask task = new unsubscribeToChannelTask(mContext, channel.get_id()){
+                        @Override
+                        protected void onPostExecute(Boolean aBoolean) {
+                            Log.v("unsubscribe", aBoolean + "");
+                            super.onPostExecute(aBoolean);
+                            selected.setIsSubscribed(true);
+                            DBHelper dbHelper = new DBHelper(context);
+                            dbHelper.modifyChannel(selected);
+                        }
+                    };
+                    task.execute();
+                }
             }
         });
 
