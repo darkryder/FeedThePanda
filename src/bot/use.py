@@ -32,7 +32,7 @@ def poll():
             description = mail.body.strip()
             print "Sending", channel, title, description
             resp = requests.post(url, data={
-                'channel': channel, 'post_title': time, 'post_description': description})
+                'channel': channel, 'post_title': title, 'post_description': description})
             if resp.json()["status"] == 200:
                 with open("uids.log", 'a+') as f:
                     f.write(mail.uid + "\n")
